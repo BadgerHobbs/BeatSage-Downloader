@@ -10,12 +10,13 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         Title="BeatSage Downloader" Height="450" Width="800"
         BorderThickness="0"
-        GlowBrush="Black"
         WindowStartupLocation="CenterScreen"
+        EnableDWMDropShadow="True"
         >
 
     <Grid>
         <Button 
+            Click="OpenAddDownloadWindow"
             Height="25"
             Width="25"
             Margin="5,2.5,0,0"

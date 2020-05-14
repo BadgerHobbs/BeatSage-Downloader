@@ -55,6 +55,12 @@ namespace BeatSage_Downloader_WPF
             });
             */
         }
+
+        public void OpenAddDownloadWindow(object sender, RoutedEventArgs e)
+        {
+            AddDownloadWindow addDownloadWindow = new AddDownloadWindow();
+            addDownloadWindow.ShowDialog();
+        }
     }
 
     public class Download : INotifyPropertyChanged
