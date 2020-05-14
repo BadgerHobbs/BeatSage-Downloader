@@ -35,7 +35,7 @@ namespace BeatSage_Downloader_WPF
             DownloadManager downloadManager = new DownloadManager(dataGrid);
 
             dataGrid.ItemsSource = DownloadManager.Downloads;
-
+            /*
             downloadManager.Add(new Download()
             {
                 Number = 1,
@@ -53,6 +53,7 @@ namespace BeatSage_Downloader_WPF
                 Artist = "???",
                 Status = "Queued"
             });
+            */
         }
     }
 

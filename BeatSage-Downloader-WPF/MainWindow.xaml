@@ -15,100 +15,172 @@
         >
 
     <Grid>
-        <iconPacks:PackIconMaterial
-            
-            Kind="MusicNotePlus"
+        <Button 
+            Height="25"
+            Width="25"
+            Margin="5,2.5,0,0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
-            Width="20"
-            Height="20"
-            Margin="5,5,0,0"
-        />
-        
-        <iconPacks:PackIconMaterial
-            
-            Kind="DotsVertical"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Left"
-            Width="10"
-            Height="10"
-            Margin="30,10,0,0"
-        />
-        
-        <iconPacks:PackIconMaterial
-            
-            Kind="Play"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Left"
-            Width="20"
-            Height="20"
-            Margin="45,5,0,0"
-        />
-        <iconPacks:PackIconMaterial
-            
-            Kind="Pause"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Left"
-            Width="20"
-            Height="20"
-            Margin="70,5,0,0"
-        />
+            Background="Transparent"
+            BorderThickness="0"
+            BorderBrush="Transparent"
+            Focusable="False">
+            <Button.ContentTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial 
+                            Kind="MusicNotePlus"        
+                            Width="15"
+                            Height="Auto"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Button.ContentTemplate>
+        </Button>
 
-        <iconPacks:PackIconMaterial
-            
-            Kind="DotsVertical"
+        <Rectangle 
+            Height="14"
+            Width="1"
+            Margin="35,8,0,0"
+            Fill="#FF444444"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
-            Width="10"
-            Height="10"
-            Margin="95,10,0,0"
-        />
+            ></Rectangle>
         
-        <iconPacks:PackIconMaterial
-            
-            Kind="ChevronUp"
+        <Button 
+            Height="25"
+            Width="25"
+            Margin="40,2.5,0,0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
-            Width="20"
-            Height="20"
-            Margin="110,5,0,0"
-        />
-        <iconPacks:PackIconMaterial
-            
-            Kind="ChevronDown"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Left"
-            Width="20"
-            Height="20"
-            Margin="135,5,0,0"
-        />
+            Background="Transparent"
+            BorderThickness="0"
+            BorderBrush="Transparent"
+            Focusable="False">
+            <Button.ContentTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial 
+                            Kind="Play"        
+                            Width="15"
+                            Height="Auto"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Button.ContentTemplate>
+        </Button>
 
-        <iconPacks:PackIconMaterial
-            
-            Kind="DotsVertical"
+        <Button 
+            Height="25"
+            Width="25"
+            Margin="65,2.5,0,0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
-            Width="20"
-            Height="10"
-            Margin="155,10,0,0"
-        />
+            Background="Transparent"
+            BorderThickness="0"
+            BorderBrush="Transparent"
+            Focusable="False">
+            <Button.ContentTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial 
+                            Kind="Pause"        
+                            Width="15"
+                            Height="Auto"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Button.ContentTemplate>
+        </Button>
         
-        <iconPacks:PackIconMaterial
-            
-            Kind="CogOutline"
+        <Rectangle 
+            Height="14"
+            Width="1"
+            Margin="95,8,0,0"
+            Fill="#FF444444"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
-            Width="20"
-            Height="20"
-            Margin="175,5,0,0"
-        />
+            ></Rectangle>
+
+        <Button 
+            Height="25"
+            Width="25"
+            Margin="100,2.5,0,0"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Background="Transparent"
+            BorderThickness="0"
+            BorderBrush="Transparent"
+            Focusable="False">
+            <Button.ContentTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial 
+                            Kind="ChevronUp"        
+                            Width="15"
+                            Height="Auto"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Button.ContentTemplate>
+        </Button>
+
+        <Button 
+            Height="25"
+            Width="25"
+            Margin="125,2.5,0,0"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Background="Transparent"
+            BorderThickness="0"
+            BorderBrush="Transparent"
+            Focusable="False">
+            <Button.ContentTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial 
+                            Kind="ChevronDown"        
+                            Width="15"
+                            Height="Auto"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Button.ContentTemplate>
+        </Button>
+
+        <Rectangle 
+            Height="14"
+            Width="1"
+            Margin="155,8,0,0"
+            Fill="#FF444444"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            ></Rectangle>
+        
+        <Button 
+            Height="25"
+            Width="25"
+            Margin="160,2.5,0,0"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Background="Transparent"
+            BorderThickness="0"
+            BorderBrush="Transparent"
+            Focusable="False">
+            <Button.ContentTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial 
+                            Kind="CogOutline"        
+                            Width="15"
+                            Height="Auto"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Button.ContentTemplate>
+        </Button>
+
 
 
         <DataGrid x:Name="dataGrid" x:FieldModifier="public" ItemsSource="{Binding Downloads}" Style="{StaticResource AzureDataGrid}" 
         
             AlternationCount = "2" 
             AutoGenerateColumns = "False"
-            Margin="0,35,0,0"
+            Margin="0,31,0,0"
             IsReadOnly="True">
 
             <DataGrid.Columns>
