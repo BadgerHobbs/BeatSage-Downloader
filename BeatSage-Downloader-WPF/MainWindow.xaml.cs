@@ -44,6 +44,7 @@ namespace BeatSage_Downloader_WPF
         public void OpenAddDownloadWindow(object sender, RoutedEventArgs e)
         {
             AddDownloadWindow addDownloadWindow = new AddDownloadWindow();
+            addDownloadWindow.Owner = this;
             addDownloadWindow.ShowDialog();
         }
     }
@@ -414,6 +415,11 @@ namespace BeatSage_Downloader_WPF
             client.DownloadFile(uri, fileName + ".zip");
 
             download.Status = "Extracting";
+
+            if (Directory.Exists(fileName))
+            {
+                Directory.Delete(fileName);
+            }
 
             ZipFile.ExtractToDirectory(fileName + ".zip", fileName);
 

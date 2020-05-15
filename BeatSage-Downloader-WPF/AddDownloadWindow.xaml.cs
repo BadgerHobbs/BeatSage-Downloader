@@ -1,7 +1,9 @@
 ﻿using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,9 +25,13 @@ namespace BeatSage_Downloader_WPF
         public AddDownloadWindow()
         {
             InitializeComponent();
+
+            this.ErrorLabelRectangle.Visibility = Visibility.Hidden;
+            this.ErrorDifficultyLabel.Visibility = Visibility.Hidden;
+            this.ErrorModeLabel.Visibility = Visibility.Hidden;
         }
 
-        public void AddDownloads(object sender, RoutedEventArgs e)
+        public async void AddDownloads(object sender, RoutedEventArgs e)
         {
             DownloadManager downloadManager = MainWindow.downloadManager;
 
@@ -76,6 +82,15 @@ namespace BeatSage_Downloader_WPF
             else
             {
                 Console.WriteLine("Please Select at Least One Difficulty");
+
+                ErrorDifficultyLabel.Visibility = Visibility.Visible;
+                ErrorLabelRectangle.Visibility = Visibility.Visible;
+
+                await Task.Delay(2000);
+
+                ErrorDifficultyLabel.Visibility = Visibility.Hidden;
+                ErrorLabelRectangle.Visibility = Visibility.Hidden;
+
                 return;
             }
 
@@ -114,6 +129,15 @@ namespace BeatSage_Downloader_WPF
             else
             {
                 Console.WriteLine("Please Select at Least One Game Mode");
+
+                ErrorLabelRectangle.Visibility = Visibility.Visible;
+                ErrorModeLabel.Visibility = Visibility.Visible;
+
+                await Task.Delay(2000);
+
+                ErrorLabelRectangle.Visibility = Visibility.Hidden;
+                ErrorModeLabel.Visibility = Visibility.Hidden;
+
                 return;
             }
 
@@ -173,6 +197,22 @@ namespace BeatSage_Downloader_WPF
             foreach (string youtubeURL in youtubeURLS)
             {
                 linksTextBox.AppendText(youtubeURL + "\n");
+            }
+        }
+
+        private void ErrorModeLabel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaiseProperChanged([CallerMemberName] string caller = "")
+        {
+
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(caller));
             }
         }
     }

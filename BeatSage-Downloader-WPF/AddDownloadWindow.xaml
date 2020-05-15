@@ -11,8 +11,10 @@
         
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         BorderThickness="0"
-        WindowStartupLocation="CenterScreen" Topmost="True"
+        WindowStartupLocation="CenterOwner" 
+        Topmost="True"
         EnableDWMDropShadow="True"
+        ResizeMode="NoResize"
         >
 
 
@@ -226,6 +228,44 @@
             Margin="56,249,0,0" 
             VerticalAlignment="Top"
             />
+
+
+        <Rectangle
+            Name="ErrorLabelRectangle"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Stretch"
+            Height="15" 
+            Fill="#FFFF3838"
+            Visibility="Hidden"
+            >
+
+        </Rectangle>
+
+        <Label
+            Name="ErrorDifficultyLabel"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Stretch"
+            Width="200"
+            Height="27.5" 
+            Content="Please Select At Least One Difficulty"
+            Margin="0,-6,0,0"
+            Visibility="Hidden"
+            >
+
+        </Label>
+
+        <Label
+            Name="ErrorModeLabel"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Stretch"
+            Width="220"
+            Height="28" 
+            Content="Please Select At Least One Game Mode"
+            Margin="0,-6,0,0"
+            Visibility="Hidden"
+            >
+
+        </Label>
 
 
 
