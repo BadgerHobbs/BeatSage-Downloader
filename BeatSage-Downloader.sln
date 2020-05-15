@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.1062
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatSage-Downloader-WPF", "BeatSage-Downloader-WPF\BeatSage-Downloader-WPF.csproj", "{4BD59B5B-5AC8-4189-B437-327334CDFC18}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatSage-Downloader", "BeatSage-Downloader-WPF\BeatSage-Downloader.csproj", "{4BD59B5B-5AC8-4189-B437-327334CDFC18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
