@@ -18,8 +18,6 @@
 
     <Grid>
 
-
-
         <TextBox
             Width="250"
             Height="10"
@@ -43,6 +41,8 @@
         </Button>
 
         <TextBox
+            Name="linksTextBox"
+            AcceptsReturn="True"
             Width="380"
             Height="220"
             HorizontalAlignment="Left"
@@ -65,7 +65,8 @@
         </Button>
 
         <Button
-            Content="Add Download"
+            Click="AddDownloads"
+            Content="Add Downloads"
             VerticalContentAlignment="Top"
             Width="130"
             Height="10"

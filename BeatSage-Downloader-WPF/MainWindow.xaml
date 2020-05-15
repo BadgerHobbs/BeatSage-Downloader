@@ -184,9 +184,10 @@
             Margin="0,31,0,0"
             IsReadOnly="True">
 
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header = "#" Binding = "{Binding Number}" Width="30"/>
-                <DataGridTextColumn Header = "YouTube ID" Binding = "{Binding YoutubeID}" Width="150"/>
+                <DataGridTextColumn Header = "YouTube ID" Binding = "{Binding YoutubeID}" Width="120"/>
                 <DataGridTextColumn Header = "Title" Binding = "{Binding Title}" Width="300"/>
                 <DataGridTextColumn Header = "Artist" Binding = "{Binding Artist}" Width="200"/>
                 <DataGridTextColumn Header = "Status" Binding = "{Binding Status}" Width="*"/>

@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 using System.Threading;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.IO;
 
 namespace BeatSage_Downloader_WPF
 {
@@ -29,31 +30,14 @@ namespace BeatSage_Downloader_WPF
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        public static DownloadManager downloadManager;
+
         public MainWindow()
         {
             InitializeComponent();
-            DownloadManager downloadManager = new DownloadManager(dataGrid);
+            downloadManager = new DownloadManager(dataGrid);
 
             dataGrid.ItemsSource = DownloadManager.Downloads;
-            /*
-            downloadManager.Add(new Download()
-            {
-                Number = 1,
-                YoutubeID = "AgFeZr5ptV8",
-                Title = "???",
-                Artist = "???",
-                Status = "Queued"
-            });
-
-            downloadManager.Add(new Download()
-            {
-                Number = 2,
-                YoutubeID = "VbfpW0pbvaU",
-                Title = "???",
-                Artist = "???",
-                Status = "Queued"
-            });
-            */
         }
 
         public void OpenAddDownloadWindow(object sender, RoutedEventArgs e)
@@ -151,7 +135,7 @@ namespace BeatSage_Downloader_WPF
 
     public class DownloadManager
     {
-        static ObservableCollection<Download> downloads = new ObservableCollection<Download>();
+        public static ObservableCollection<Download> downloads = new ObservableCollection<Download>();
 
         private static readonly HttpClient httpClient = new HttpClient();
 
@@ -176,27 +160,37 @@ namespace BeatSage_Downloader_WPF
 
         public async void RunDownloads()
         {
-            Console.WriteLine("RunDownloads Waiting...");
-            
-            System.Threading.Thread.Sleep(3000);
-
             Console.WriteLine("RunDownloads Started");
 
-            for (int i = 0; i < downloads.Count; i++)
+            int previousNumberOfDownloads = downloads.Count;
+
+            while (true)
             {
-                // Download Item
-                string itemUrl = "https://www.youtube.com/watch?v=" + downloads[0].YoutubeID;
+                Console.WriteLine("Checking for Downloads...");
 
-                downloads[i].Status = "Downloading";
+                if (previousNumberOfDownloads != downloads.Count)
+                {
+                    for (int i = previousNumberOfDownloads; i < downloads.Count; i++)
+                    {
+                        // Download Item
+                        string itemUrl = "https://www.youtube.com/watch?v=" + downloads[i].YoutubeID;
 
-                //CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
+                        //CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
 
-                await RetrieveMetaData(itemUrl);
+                        await RetrieveMetaData(itemUrl, downloads[i]);
 
-                downloads[i].Status = "Complete";
+                        downloads[i].Status = "Complete";
 
-                //CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
+                        //CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
+                    }
+
+                    previousNumberOfDownloads = downloads.Count;
+                }
+                
+                System.Threading.Thread.Sleep(1000);
             }
+
+            
         }
 
         public static ObservableCollection<Download> Downloads
@@ -212,8 +206,10 @@ namespace BeatSage_Downloader_WPF
             downloads.Add(download);
         }
 
-        public async static Task RetrieveMetaData(string url)
+        public async static Task RetrieveMetaData(string url, Download download)
         {
+            download.Status = "Retrieving MetaData";
+
             var values = new Dictionary<string, string>
             {
                 { "youtube_url", url }
@@ -239,7 +235,7 @@ namespace BeatSage_Downloader_WPF
                 {
                     JObject jsonString = JObject.Parse(responseString);
 
-                    await CreateCustomLevel(jsonString);
+                    await CreateCustomLevel(jsonString, download);
                     break;
                 }
                 catch
@@ -256,8 +252,10 @@ namespace BeatSage_Downloader_WPF
             }
         }
 
-        static async Task CreateCustomLevel(JObject responseData)
+        static async Task CreateCustomLevel(JObject responseData, Download download)
         {
+            download.Status = "Generating Custom Level";
+
             string trackName = "null";
 
             if (((string)responseData["track"]) != null)
@@ -279,6 +277,15 @@ namespace BeatSage_Downloader_WPF
             {
                 artistName = (string)responseData["uploader"];
             }
+
+            Console.WriteLine("trackName: " + trackName);
+            Console.WriteLine("artistName: " + artistName);
+
+            download.Title = trackName;
+            download.Artist = artistName;
+
+            Console.WriteLine("download.Title: " + download.Title);
+            Console.WriteLine("download.Artist : " + download.Artist);
 
             string boundary = "----WebKitFormBoundaryaA38RFcmCeKFPOms";
             var content = new MultipartFormDataContent(boundary);
@@ -305,10 +312,10 @@ namespace BeatSage_Downloader_WPF
 
             Console.WriteLine(levelID);
 
-            await CheckDownload(levelID, trackName, artistName);
+            await CheckDownload(levelID, trackName, artistName, download);
         }
 
-        static async Task CheckDownload(string levelId, string trackName, string artistName)
+        static async Task CheckDownload(string levelId, string trackName, string artistName, Download download)
         {
             string url = "https://beatsage.com/beatsaber_custom_level_heartbeat/" + levelId;
 
@@ -345,6 +352,7 @@ namespace BeatSage_Downloader_WPF
 
             if (levelStatus == "DONE")
             {
+                download.Status = "Downloading";
                 RetrieveDownload(levelId, trackName, artistName);
             }
         }
@@ -355,7 +363,7 @@ namespace BeatSage_Downloader_WPF
 
             Console.WriteLine(url);
 
-            string fileName = trackName + " - " + artistName + ".zip";
+            string fileName = "[BSD] " + trackName + " - " + artistName + ".zip";
 
             WebClient client = new WebClient();
             Uri uri = new Uri(url);

@@ -24,5 +24,30 @@ namespace BeatSage_Downloader_WPF
         {
             InitializeComponent();
         }
+
+        public void AddDownloads(object sender, RoutedEventArgs e)
+        {
+            DownloadManager downloadManager = MainWindow.downloadManager;
+            
+            for (int i = 0; i < linksTextBox.LineCount; i++)
+            {
+                string youtubeID = linksTextBox.GetLineText(i).Replace("https://www.youtube.com/watch?v=", "").TrimEnd('\r', '\n');
+
+                Console.WriteLine("Youtube ID: " + youtubeID);
+
+                MainWindow.downloadManager.Add(new Download()
+                {
+                    Number = DownloadManager.downloads.Count + 1,
+                    YoutubeID = youtubeID,
+                    Title = "???",
+                    Artist = "???",
+                    Status = "Queued"
+                });
+            }
+
+            this.Close();
+
+
+        }
     }
 }
