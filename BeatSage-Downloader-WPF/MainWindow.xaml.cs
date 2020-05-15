@@ -55,6 +55,9 @@ namespace BeatSage_Downloader_WPF
         private string title;
         private string artist;
         private string status;
+        private string difficulties;
+        private string gameModes;
+        private string songEvents;
 
         public int Number
         {
@@ -116,6 +119,45 @@ namespace BeatSage_Downloader_WPF
             set
             {
                 status = value;
+                RaiseProperChanged();
+            }
+        }
+
+        public string Difficulties
+        {
+            get
+            {
+                return difficulties;
+            }
+            set
+            {
+                difficulties = value;
+                RaiseProperChanged();
+            }
+        }
+
+        public string GameModes
+        {
+            get
+            {
+                return gameModes;
+            }
+            set
+            {
+                gameModes = value;
+                RaiseProperChanged();
+            }
+        }
+
+        public string SongEvents
+        {
+            get
+            {
+                return songEvents;
+            }
+            set
+            {
+                songEvents = value;
                 RaiseProperChanged();
             }
         }
@@ -296,9 +338,9 @@ namespace BeatSage_Downloader_WPF
             content.Add(new StringContent((string)responseData["webpage_url"]), "youtube_url");
             content.Add(new StringContent(trackName), "audio_metadata_title");
             content.Add(new StringContent(artistName), "audio_metadata_artist");
-            content.Add(new StringContent("Expert,ExpertPlus"), "difficulties");
-            content.Add(new StringContent("Standard"), "modes");
-            content.Add(new StringContent(""), "events");
+            content.Add(new StringContent(download.Difficulties), "difficulties");
+            content.Add(new StringContent(download.GameModes), "modes");
+            content.Add(new StringContent(download.SongEvents), "events");
             content.Add(new StringContent("0"), "seed");
 
             var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content);

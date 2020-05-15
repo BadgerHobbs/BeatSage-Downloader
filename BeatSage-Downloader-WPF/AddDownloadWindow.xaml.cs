@@ -28,7 +28,110 @@ namespace BeatSage_Downloader_WPF
         public void AddDownloads(object sender, RoutedEventArgs e)
         {
             DownloadManager downloadManager = MainWindow.downloadManager;
-            
+
+            string selectedDifficulties = "";
+            string selectedGameModes = "";
+            string selectedSongEvents = "";
+
+            bool difficultySelected = false;
+            bool gameModeSelected = false;
+
+            if ((DifficultyNormalCheckBox.IsChecked == true) || (DifficultyHardCheckBox.IsChecked == true) || (DifficultyExpertPlusCheckBox.IsChecked == true) || (DifficultyExpertPlusCheckBox.IsChecked == true))
+            {
+                difficultySelected = true;
+            }
+
+            if ((GameModeStandardCheckBox.IsChecked == true) || (GameModeOneSaberCheckBox.IsChecked == true) || (GameModeNoArrowsCheckBox.IsChecked == true) || (GameMode90DegreesCheckBox.IsChecked == true) || (GameMode360DegreesCheckBox.IsChecked == true))
+            {
+                gameModeSelected = true;
+            }
+
+            if (difficultySelected == true)
+            {
+                if (DifficultyNormalCheckBox.IsChecked == true)
+                {
+                    selectedDifficulties += "Normal,";
+                }
+
+                if (DifficultyHardCheckBox.IsChecked == true)
+                {
+                    selectedDifficulties += "Hard,";
+                }
+
+                if (DifficultyExpertCheckBox.IsChecked == true)
+                {
+                    selectedDifficulties += "Expert,";
+                }
+
+                if (DifficultyExpertPlusCheckBox.IsChecked == true)
+                {
+                    selectedDifficulties += "ExpertPlus,";
+                }
+
+                if (selectedDifficulties[selectedDifficulties.Count() - 1] == ',')
+                {
+                    selectedDifficulties = selectedDifficulties.Remove(selectedDifficulties.Count() - 1);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Please Select at Least One Difficulty");
+                return;
+            }
+
+            if (gameModeSelected == true)
+            {
+                if (GameModeStandardCheckBox.IsChecked == true)
+                {
+                    selectedGameModes += "Standard,";
+                }
+
+                if (GameModeNoArrowsCheckBox.IsChecked == true)
+                {
+                    selectedGameModes += "NoArrows,";
+                }
+
+                if (GameModeOneSaberCheckBox.IsChecked == true)
+                {
+                    selectedGameModes += "OneSaber,";
+                }
+
+                if (GameMode90DegreesCheckBox.IsChecked == true)
+                {
+                    selectedGameModes += "90Degrees,";
+                }
+
+                if (GameMode360DegreesCheckBox.IsChecked == true)
+                {
+                    selectedGameModes += "360Degrees,";
+                }
+
+                if (selectedGameModes[selectedGameModes.Count() - 1] == ',')
+                {
+                    selectedGameModes = selectedGameModes.Remove(selectedGameModes.Count() - 1);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Please Select at Least One Game Mode");
+                return;
+            }
+
+            if (SongEventsBombsCheckBox.IsChecked == true)
+            {
+                selectedSongEvents += "Bombs,";
+            }
+
+            if (SongEventDotBlocksCheckBox.IsChecked == true)
+            {
+                selectedSongEvents += "DotBlocks,";
+            }
+
+            if ((selectedSongEvents != "") && (selectedSongEvents[selectedSongEvents.Count() - 1] == ','))
+            {
+                selectedSongEvents = selectedSongEvents.Remove(selectedSongEvents.Count() - 1);
+            }
+
             for (int i = 0; i < linksTextBox.LineCount; i++)
             {
                 if (linksTextBox.GetLineText(i).Replace(" ", "").Replace("\n","").Replace("\r","").Count() < 5)
@@ -46,7 +149,10 @@ namespace BeatSage_Downloader_WPF
                     YoutubeID = youtubeID,
                     Title = "???",
                     Artist = "???",
-                    Status = "Queued"
+                    Status = "Queued",
+                    Difficulties = selectedDifficulties,
+                    GameModes = selectedGameModes,
+                    SongEvents = selectedSongEvents,
                 });
             }
 
