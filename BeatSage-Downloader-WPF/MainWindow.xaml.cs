@@ -423,6 +423,11 @@ namespace BeatSage_Downloader_WPF
 
             ZipFile.ExtractToDirectory(fileName + ".zip", fileName);
 
+            if (File.Exists(fileName + ".zip"))
+            {
+                File.Delete(fileName + ".zip");
+            }
+
             download.Status = "Completed";
         }
 
