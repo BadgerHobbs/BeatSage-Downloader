@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Forms;
 
-namespace BeatSage_Downloader_WPF
+namespace BeatSage_Downloader
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml

@@ -24,7 +24,7 @@ using System.Runtime.CompilerServices;
 using System.IO;
 using System.IO.Compression;
 
-namespace BeatSage_Downloader_WPF
+namespace BeatSage_Downloader
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

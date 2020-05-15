@@ -6,14 +6,16 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4BD59B5B-5AC8-4189-B437-327334CDFC18}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>BeatSage_Downloader_WPF</RootNamespace>
-    <AssemblyName>BeatSage-Downloader-WPF</AssemblyName>
+    <RootNamespace>BeatSage_Downloader</RootNamespace>
+    <AssemblyName>BeatSage-Downloader</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
