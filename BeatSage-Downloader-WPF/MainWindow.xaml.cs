@@ -39,6 +39,11 @@ namespace BeatSage_Downloader_WPF
             downloadManager = new DownloadManager(dataGrid);
 
             dataGrid.ItemsSource = DownloadManager.Downloads;
+
+            if (Directory.Exists("Downloads") == false)
+            {
+                Directory.CreateDirectory("Downloads");
+            }
         }
 
         public void OpenAddDownloadWindow(object sender, RoutedEventArgs e)
@@ -46,6 +51,17 @@ namespace BeatSage_Downloader_WPF
             AddDownloadWindow addDownloadWindow = new AddDownloadWindow();
             addDownloadWindow.Owner = this;
             addDownloadWindow.ShowDialog();
+        }
+        public void OpenSettingsWindow(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow settingsWindow = new SettingsWindow();
+            settingsWindow.Owner = this;
+            settingsWindow.ShowDialog();
+        }
+        private void OnExit(object sender, ExitEventArgs e)
+        {
+            Properties.Settings.Default.Save();
+
         }
     }
 
@@ -421,7 +437,13 @@ namespace BeatSage_Downloader_WPF
                 Directory.Delete(fileName);
             }
 
-            ZipFile.ExtractToDirectory(fileName + ".zip", fileName);
+            if (Properties.Settings.Default.outputDirectory == "")
+            {
+                Properties.Settings.Default.outputDirectory = @"Downloads";
+                Properties.Settings.Default.Save();
+            }
+
+            ZipFile.ExtractToDirectory(fileName + ".zip", Properties.Settings.Default.outputDirectory + @"\" + fileName);
 
             if (File.Exists(fileName + ".zip"))
             {

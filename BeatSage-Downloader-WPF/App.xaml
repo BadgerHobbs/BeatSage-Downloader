@@ -2,9 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:BeatSage_Downloader_WPF"
+             xmlns:properties="clr-namespace:BeatSage_Downloader_WPF.Properties"
              StartupUri="MainWindow.xaml">
+
     <Application.Resources>
         <ResourceDictionary>
+            <properties:Settings x:Key="Settings" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />

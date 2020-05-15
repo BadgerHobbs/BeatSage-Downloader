@@ -29,6 +29,68 @@ namespace BeatSage_Downloader_WPF
             this.ErrorLabelRectangle.Visibility = Visibility.Hidden;
             this.ErrorDifficultyLabel.Visibility = Visibility.Hidden;
             this.ErrorModeLabel.Visibility = Visibility.Hidden;
+
+            string previousDifficulties = Properties.Settings.Default.previousDifficulties;
+            string previousGameModes = Properties.Settings.Default.previousGameModes;
+            string previousSongEvents = Properties.Settings.Default.previousGameEvents;
+
+            if (previousDifficulties.Contains("Normal"))
+            {
+                DifficultyNormalCheckBox.IsChecked = true;
+            }
+
+            if (previousDifficulties.Contains("Hard"))
+            {
+                DifficultyHardCheckBox.IsChecked = true;
+            }
+
+            if (previousDifficulties.Contains("Expert"))
+            {
+                DifficultyExpertCheckBox.IsChecked = true;
+            }
+
+            if (previousDifficulties.Contains("ExpertPlus"))
+            {
+                DifficultyExpertPlusCheckBox.IsChecked = true;
+            }
+
+
+            if (previousGameModes.Contains("Standard"))
+            {
+                GameModeStandardCheckBox.IsChecked = true;
+            }
+
+            if (previousGameModes.Contains("NoArrows"))
+            {
+                GameModeNoArrowsCheckBox.IsChecked = true;
+            }
+
+            if (previousGameModes.Contains("OneSaber"))
+            {
+                GameModeOneSaberCheckBox.IsChecked = true;
+            }
+
+            if (previousGameModes.Contains("90Degrees"))
+            {
+                GameMode90DegreesCheckBox.IsChecked = true;
+            }
+
+            if (previousGameModes.Contains("360Degrees"))
+            {
+                GameMode360DegreesCheckBox.IsChecked = true;
+            }
+
+
+            if (previousSongEvents.Contains("DotBlocks"))
+            {
+                SongEventDotBlocksCheckBox.IsChecked = true;
+            }
+
+            if (previousSongEvents.Contains("Bombs"))
+            {
+                SongEventsBombsCheckBox.IsChecked = true;
+            }
+            
         }
 
         public async void AddDownloads(object sender, RoutedEventArgs e)
@@ -77,6 +139,9 @@ namespace BeatSage_Downloader_WPF
                 if (selectedDifficulties[selectedDifficulties.Count() - 1] == ',')
                 {
                     selectedDifficulties = selectedDifficulties.Remove(selectedDifficulties.Count() - 1);
+                    
+                    Properties.Settings.Default.previousDifficulties = selectedDifficulties;
+                    Properties.Settings.Default.Save();
                 }
             }
             else
@@ -124,6 +189,9 @@ namespace BeatSage_Downloader_WPF
                 if (selectedGameModes[selectedGameModes.Count() - 1] == ',')
                 {
                     selectedGameModes = selectedGameModes.Remove(selectedGameModes.Count() - 1);
+
+                    Properties.Settings.Default.previousGameModes = selectedGameModes;
+                    Properties.Settings.Default.Save();
                 }
             }
             else
@@ -154,10 +222,25 @@ namespace BeatSage_Downloader_WPF
             if ((selectedSongEvents != "") && (selectedSongEvents[selectedSongEvents.Count() - 1] == ','))
             {
                 selectedSongEvents = selectedSongEvents.Remove(selectedSongEvents.Count() - 1);
+
+                Properties.Settings.Default.previousGameEvents = selectedSongEvents;
+                Properties.Settings.Default.Save();
             }
 
             for (int i = 0; i < linksTextBox.LineCount; i++)
             {
+                if (DownloadManager.downloads.Count >= 100)
+                {
+                    ErrorMaxDownloadsLabel.Visibility = Visibility.Visible;
+                    ErrorLabelRectangle.Visibility = Visibility.Visible;
+
+                    await Task.Delay(2000);
+
+                    ErrorMaxDownloadsLabel.Visibility = Visibility.Hidden;
+                    ErrorLabelRectangle.Visibility = Visibility.Hidden;
+                    return;
+                }
+
                 if (linksTextBox.GetLineText(i).Replace(" ", "").Replace("\n","").Replace("\r","").Count() < 5)
                 {
                     continue;
@@ -190,14 +273,30 @@ namespace BeatSage_Downloader_WPF
             this.Close();
         }
 
-        public void ImportPlaylist(object sender, RoutedEventArgs e)
+        public async void ImportPlaylist(object sender, RoutedEventArgs e)
         {
-            List<string> youtubeURLS = DownloadManager.RetrieveYouTubePlaylist(playlistURLTextBox.Text);
-
-            foreach (string youtubeURL in youtubeURLS)
+            try
             {
-                linksTextBox.AppendText(youtubeURL + "\n");
+                List<string> youtubeURLS = DownloadManager.RetrieveYouTubePlaylist(playlistURLTextBox.Text);
+
+                foreach (string youtubeURL in youtubeURLS)
+                {
+                    linksTextBox.AppendText(youtubeURL + "\n");
+                }
             }
+            catch
+            {
+                ErrorPlaylistLabel.Visibility = Visibility.Visible;
+                ErrorLabelRectangle.Visibility = Visibility.Visible;
+
+                await Task.Delay(2000);
+
+                ErrorPlaylistLabel.Visibility = Visibility.Hidden;
+                ErrorLabelRectangle.Visibility = Visibility.Hidden;
+                
+            }
+
+            
         }
 
         private void ErrorModeLabel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

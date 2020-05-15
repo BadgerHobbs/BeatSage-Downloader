@@ -34,12 +34,13 @@
         <Button
             Click="ImportPlaylist"
             Content="Import YT Playlist"
-            VerticalContentAlignment="Top"
+            VerticalContentAlignment="Center"
             Width="120"
             Height="10"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Margin="460,10,0,0"    
+            Margin="460,10,0,0"      
+            Padding="0,0,0,0"
             >
 
         </Button>
@@ -59,12 +60,13 @@
         <Button
             Content="Cancel"
             Click="CloseWindow"
-            VerticalContentAlignment="Top"
+            VerticalContentAlignment="Center"
             Width="90"
             Height="10"
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"
             Margin="490,0,0,10"   
+            Padding="0,0,0,0"  
             >
 
         </Button>
@@ -72,12 +74,13 @@
         <Button
             Click="AddDownloads"
             Content="Add Downloads"
-            VerticalContentAlignment="Top"
+            VerticalContentAlignment="Center"
             Width="130"
             Height="10"
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"
-            Margin="350,0,0,10"    
+            Margin="350,0,0,10"      
+            Padding="0,0,0,0"
             >
 
         </Button>
@@ -116,7 +119,6 @@
 
         <CheckBox 
             Content="Expert" 
-            IsChecked="True"
             Name="DifficultyExpertCheckBox"
             HorizontalAlignment="Left" 
             Margin="94,40,0,0" 
@@ -125,7 +127,6 @@
 
         <CheckBox 
             Content="Expert+" 
-            IsChecked="True"
             Name="DifficultyExpertPlusCheckBox"
             HorizontalAlignment="Left" 
             Margin="94,64,0,0" 
@@ -149,7 +150,6 @@
 
         <CheckBox 
             Content="Standard" 
-            IsChecked="True"
             Name="GameModeStandardCheckBox"
             HorizontalAlignment="Left" 
             Margin="18,125,0,0" 
@@ -266,7 +266,32 @@
             >
 
         </Label>
+        
+        <Label
+            Name="ErrorPlaylistLabel"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Stretch"
+            Width="220"
+            Height="28" 
+            Content="Please Enter a Valid YouTube Playlist URL"
+            Margin="0,-6,0,0"
+            Visibility="Hidden"
+            >
 
+        </Label>
+
+        <Label
+            Name="ErrorMaxDownloadsLabel"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Stretch"
+            Width="300"
+            Height="28" 
+            Content="You Have Reached The Maximum 100 Downloads"
+            Margin="0,-6,0,0"
+            Visibility="Hidden"
+            >
+
+        </Label>
 
 
 

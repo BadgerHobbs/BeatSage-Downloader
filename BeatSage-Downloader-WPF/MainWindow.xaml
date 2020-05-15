@@ -158,8 +158,9 @@
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             ></Rectangle>
-        
+
         <Button 
+            Click="OpenSettingsWindow"
             Height="25"
             Width="25"
             Margin="40,2.5,0,0"
