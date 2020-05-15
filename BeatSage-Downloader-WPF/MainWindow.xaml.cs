@@ -22,6 +22,7 @@ using System.Threading;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.IO;
+using System.IO.Compression;
 
 namespace BeatSage_Downloader_WPF
 {
@@ -178,8 +179,6 @@ namespace BeatSage_Downloader_WPF
                         //CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
 
                         await RetrieveMetaData(itemUrl, downloads[i]);
-
-                        downloads[i].Status = "Complete";
 
                         //CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
                     }
@@ -354,22 +353,29 @@ namespace BeatSage_Downloader_WPF
 
             if (levelStatus == "DONE")
             {
-                download.Status = "Downloading";
-                RetrieveDownload(levelId, trackName, artistName);
+                RetrieveDownload(levelId, trackName, artistName, download);
             }
         }
 
-        static void RetrieveDownload(string levelId, string trackName, string artistName)
+        static void RetrieveDownload(string levelId, string trackName, string artistName, Download download)
         {
+            download.Status = "Downloading";
+
             string url = "https://beatsage.com/beatsaber_custom_level_download/" + levelId;
 
             Console.WriteLine(url);
 
-            string fileName = "[BSD] " + trackName + " - " + artistName + ".zip";
+            string fileName = "[BSD] " + trackName + " - " + artistName;
 
             WebClient client = new WebClient();
             Uri uri = new Uri(url);
-            client.DownloadFile(uri, fileName);
+            client.DownloadFile(uri, fileName + ".zip");
+
+            download.Status = "Extracting";
+
+            ZipFile.ExtractToDirectory(fileName + ".zip", fileName);
+
+            download.Status = "Completed";
         }
 
         public static List<string> RetrieveYouTubePlaylist(string playlistULR)

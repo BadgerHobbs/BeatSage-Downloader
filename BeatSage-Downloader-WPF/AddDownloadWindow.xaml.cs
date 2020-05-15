@@ -31,7 +31,7 @@ namespace BeatSage_Downloader_WPF
             
             for (int i = 0; i < linksTextBox.LineCount; i++)
             {
-                if (linksTextBox.GetLineText(i).Replace(" ", "") == "")
+                if (linksTextBox.GetLineText(i).Replace(" ", "").Replace("\n","").Replace("\r","").Count() < 5)
                 {
                     continue;
                 }
