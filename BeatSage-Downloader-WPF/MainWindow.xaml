@@ -188,9 +188,9 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header = "#" Binding = "{Binding Number}" Width="30"/>
                 <DataGridTextColumn Header = "YouTube ID" Binding = "{Binding YoutubeID}" Width="120"/>
-                <DataGridTextColumn Header = "Title" Binding = "{Binding Title}" Width="300"/>
+                <DataGridTextColumn Header = "Title" Binding = "{Binding Title}" Width="*"/>
                 <DataGridTextColumn Header = "Artist" Binding = "{Binding Artist}" Width="200"/>
-                <DataGridTextColumn Header = "Status" Binding = "{Binding Status}" Width="*"/>
+                <DataGridTextColumn Header = "Status" Binding = "{Binding Status}" Width="150"/>
 
             </DataGrid.Columns>
 

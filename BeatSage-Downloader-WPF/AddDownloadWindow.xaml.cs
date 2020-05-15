@@ -55,6 +55,11 @@ namespace BeatSage_Downloader_WPF
 
         }
 
+        public void CloseWindow(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
         public void ImportPlaylist(object sender, RoutedEventArgs e)
         {
             List<string> youtubeURLS = DownloadManager.RetrieveYouTubePlaylist(playlistURLTextBox.Text);

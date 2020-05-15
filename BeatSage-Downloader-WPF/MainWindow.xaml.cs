@@ -249,6 +249,8 @@ namespace BeatSage_Downloader_WPF
             if (attempts >= 5)
             {
                 Console.WriteLine("Failed to Create Custom Level!");
+
+                download.Status = "Failed";
             }
         }
 
