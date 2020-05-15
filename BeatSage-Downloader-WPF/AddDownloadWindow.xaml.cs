@@ -31,6 +31,11 @@ namespace BeatSage_Downloader_WPF
             
             for (int i = 0; i < linksTextBox.LineCount; i++)
             {
+                if (linksTextBox.GetLineText(i).Replace(" ", "") == "")
+                {
+                    continue;
+                }
+
                 string youtubeID = linksTextBox.GetLineText(i).Replace("https://www.youtube.com/watch?v=", "").TrimEnd('\r', '\n');
 
                 Console.WriteLine("Youtube ID: " + youtubeID);
@@ -48,6 +53,16 @@ namespace BeatSage_Downloader_WPF
             this.Close();
 
 
+        }
+
+        public void ImportPlaylist(object sender, RoutedEventArgs e)
+        {
+            List<string> youtubeURLS = DownloadManager.RetrieveYouTubePlaylist(playlistURLTextBox.Text);
+
+            foreach (string youtubeURL in youtubeURLS)
+            {
+                linksTextBox.AppendText(youtubeURL + "\n");
+            }
         }
     }
 }

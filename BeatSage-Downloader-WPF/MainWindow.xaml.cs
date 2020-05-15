@@ -369,5 +369,66 @@ namespace BeatSage_Downloader_WPF
             Uri uri = new Uri(url);
             client.DownloadFile(uri, fileName);
         }
+
+        public static List<string> RetrieveYouTubePlaylist(string playlistULR)
+        {
+            string cleanPlaylistURL = playlistULR.Replace("watch?v", "playlist?v").Replace("music.", "");
+
+            string htmlContent = new WebClient().DownloadString(cleanPlaylistURL);
+
+            List<string> urls = new List<string>();
+
+            string searchString = "data-video-id=";
+
+            int htmlPointerLocation = 1;
+
+            while (htmlPointerLocation > 0)
+            {
+
+                htmlPointerLocation = htmlContent.IndexOf(searchString);
+
+                if (htmlPointerLocation > 0)
+                {
+                    string temporaryURL = "";
+
+                    int i = 0;
+
+                    for (i = (htmlPointerLocation + searchString.Count() + 1); i < htmlContent.Count(); i++)
+                    {
+                        if (htmlContent[i].ToString() != "\"")
+                        {
+                            temporaryURL += htmlContent[i];
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    htmlContent = htmlContent.Substring(i);
+
+                    string newURL = "https://www.youtube.com/watch?v=" + temporaryURL;
+
+                    bool alreadyExists = false;
+
+                    foreach (string currentURL in urls)
+                    {
+                        if ((currentURL == newURL) || (newURL.Contains(currentURL)))
+                        {
+                            alreadyExists = true;
+                            break;
+                        }
+                    }
+
+                    if (alreadyExists == false)
+                    {
+                        Console.WriteLine(newURL);
+                        urls.Add(newURL);
+                    }
+                }
+            }
+
+            return urls;
+        }
     }
 }

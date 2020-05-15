@@ -19,6 +19,7 @@
     <Grid>
 
         <TextBox
+            Name="playlistURLTextBox"
             Width="250"
             Height="10"
             HorizontalAlignment="Left"
@@ -29,7 +30,8 @@
         </TextBox>
 
         <Button
-            Content="Import Playlist"
+            Click="ImportPlaylist"
+            Content="Import YT Playlist"
             VerticalContentAlignment="Top"
             Width="120"
             Height="10"
