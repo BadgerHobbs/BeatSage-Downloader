@@ -194,10 +194,10 @@
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header = "#" Binding = "{Binding Number}" Width="30"/>
-                <DataGridTextColumn Header = "YouTube ID/File Name" Binding = "{Binding Identifier}" Width="180"/>
-                <DataGridTextColumn Header = "Title" Binding = "{Binding Title}" Width="*"/>
-                <DataGridTextColumn Header = "Artist" Binding = "{Binding Artist}" Width="160"/>
-                <DataGridTextColumn Header = "Status" Binding = "{Binding Status}" Width="150"/>
+                <DataGridTextColumn Header = "YouTube ID/File Name" Binding = "{Binding Identifier}" Width="2*"/>
+                <DataGridTextColumn Header = "Title" Binding = "{Binding Title}" Width="2*"/>
+                <DataGridTextColumn Header = "Artist" Binding = "{Binding Artist}" Width="1.5*"/>
+                <DataGridTextColumn Header = "Status" Binding = "{Binding Status}" Width="160"/>
 
             </DataGrid.Columns>
 

@@ -17,9 +17,8 @@
         ResizeMode="NoResize"
         >
 
-
     <Grid>
-        
+
         <Button
             Content="Upload MP3"
             Click="GetMP3Files"
@@ -43,7 +42,8 @@
             VerticalAlignment="Top"
             Margin="200,40,0,0"
             GotFocus="PlaylistTextBoxFocusChange"
-            LostFocus="PlaylistTextBoxFocusChange" Foreground="#FF959595"
+            LostFocus="PlaylistTextBoxFocusChange" 
+            Foreground="#FF959595"
             >
 
         </TextBox>
@@ -72,10 +72,29 @@
             VerticalAlignment="Bottom"
             Margin="200,0,0,40"          
             GotFocus="LinksTextBoxFocusChange"
-            LostFocus="LinksTextBoxFocusChange" Foreground="#FF959595"  
+            LostFocus="LinksTextBoxFocusChange" 
+            Foreground="#FF959595"  
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Auto"
             >
 
         </TextBox>
+
+        <Label
+            Visibility="Hidden"
+            Name="loadingLabel"
+            Content="Loading..."
+            Width="380"
+            Height="210"
+            Margin="200,0,0,40"     
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"   
+            VerticalContentAlignment="Center"
+            HorizontalContentAlignment="Center"
+            Foreground="#FF959595"
+            >
+            
+        </Label>
 
         <Button
             Content="Cancel"
@@ -262,23 +281,10 @@
         </Rectangle>
 
         <Label
-            Name="ErrorDifficultyLabel"
+            Name="ErrorLabel"
             VerticalAlignment="Top"
             HorizontalAlignment="Stretch"
-            Width="200"
-            Height="27.5" 
-            Content="Please Select At Least One Difficulty"
-            Margin="0,-6,0,0"
-            Visibility="Hidden"
-            >
-
-        </Label>
-
-        <Label
-            Name="ErrorModeLabel"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Stretch"
-            Width="220"
+            Width="300"
             Height="28" 
             Content="Please Select At Least One Game Mode"
             Margin="0,-6,0,0"
@@ -286,34 +292,8 @@
             >
 
         </Label>
-        
-        <Label
-            Name="ErrorPlaylistLabel"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Stretch"
-            Width="220"
-            Height="28" 
-            Content="Please Enter a Valid YouTube Playlist URL"
-            Margin="0,-6,0,0"
-            Visibility="Hidden"
-            >
-
-        </Label>
-
-        <Label
-            Name="ErrorMaxDownloadsLabel"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Stretch"
-            Width="300"
-            Height="28" 
-            Content="You Have Reached The Maximum 100 Downloads"
-            Margin="0,-6,0,0"
-            Visibility="Hidden"
-            >
-
-        </Label>
-
-
 
     </Grid>
+    
+    
 </Controls:MetroWindow>

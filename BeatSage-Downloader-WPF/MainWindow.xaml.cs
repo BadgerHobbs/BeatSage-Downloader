@@ -337,7 +337,7 @@ namespace BeatSage_Downloader
 
             int attempts = 0;
 
-            while (attempts < 5)
+            while (attempts < 2)
             {
                 try
                 {
@@ -354,7 +354,7 @@ namespace BeatSage_Downloader
                 }
             }
 
-            if (attempts >= 5)
+            if (attempts >= 2)
             {
                 Console.WriteLine("Failed to Create Custom Level!");
 
@@ -430,9 +430,23 @@ namespace BeatSage_Downloader
             download.Status = "Uploading File";
 
             TagLib.File tagFile = TagLib.File.Create(download.FilePath);
-            string artist = tagFile.Tag.FirstAlbumArtist;
-            string title = tagFile.Tag.Title;
-            
+
+            string artist = "";
+            string title = "";
+
+            if (tagFile.Tag.FirstPerformer != null)
+            {
+                artist = tagFile.Tag.FirstPerformer;
+            }
+
+            if (tagFile.Tag.Title != null)
+            {
+                title = tagFile.Tag.Title;
+            }
+
+            download.Artist = artist;
+            download.Title = title;
+
             byte[] bytes = System.IO.File.ReadAllBytes(download.FilePath);
 
             //HttpContent fileStreamContent = new StreamContent(fileStream);

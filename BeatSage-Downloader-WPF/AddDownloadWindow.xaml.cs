@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -27,8 +28,7 @@ namespace BeatSage_Downloader
             InitializeComponent();
 
             this.ErrorLabelRectangle.Visibility = Visibility.Hidden;
-            this.ErrorDifficultyLabel.Visibility = Visibility.Hidden;
-            this.ErrorModeLabel.Visibility = Visibility.Hidden;
+            this.ErrorLabel.Visibility = Visibility.Hidden;
 
             string previousDifficulties = Properties.Settings.Default.previousDifficulties;
             string previousGameModes = Properties.Settings.Default.previousGameModes;
@@ -93,8 +93,10 @@ namespace BeatSage_Downloader
             
         }
 
-        public async void AddDownloads(object sender, RoutedEventArgs e)
+        public void AddDownloads(object sender, RoutedEventArgs e)
         {
+            loadingLabel.Visibility = Visibility.Visible;
+
             DownloadManager downloadManager = MainWindow.downloadManager;
 
             string selectedDifficulties = "";
@@ -148,13 +150,7 @@ namespace BeatSage_Downloader
             {
                 Console.WriteLine("Please Select at Least One Difficulty");
 
-                ErrorDifficultyLabel.Visibility = Visibility.Visible;
-                ErrorLabelRectangle.Visibility = Visibility.Visible;
-
-                await Task.Delay(2000);
-
-                ErrorDifficultyLabel.Visibility = Visibility.Hidden;
-                ErrorLabelRectangle.Visibility = Visibility.Hidden;
+                RaiseAnError("Please Select at Least One Difficulty");
 
                 return;
             }
@@ -198,13 +194,7 @@ namespace BeatSage_Downloader
             {
                 Console.WriteLine("Please Select at Least One Game Mode");
 
-                ErrorLabelRectangle.Visibility = Visibility.Visible;
-                ErrorModeLabel.Visibility = Visibility.Visible;
-
-                await Task.Delay(2000);
-
-                ErrorLabelRectangle.Visibility = Visibility.Hidden;
-                ErrorModeLabel.Visibility = Visibility.Hidden;
+                RaiseAnError("Please Select at Least One Game Mode");
 
                 return;
             }
@@ -231,13 +221,9 @@ namespace BeatSage_Downloader
             {
                 if (DownloadManager.downloads.Count >= 100)
                 {
-                    ErrorMaxDownloadsLabel.Visibility = Visibility.Visible;
-                    ErrorLabelRectangle.Visibility = Visibility.Visible;
 
-                    await Task.Delay(2000);
+                    RaiseAnError("Maximum of 100 Downloads Reached");
 
-                    ErrorMaxDownloadsLabel.Visibility = Visibility.Hidden;
-                    ErrorLabelRectangle.Visibility = Visibility.Hidden;
                     return;
                 }
 
@@ -291,8 +277,9 @@ namespace BeatSage_Downloader
 
             }
 
-            this.Close();
+            loadingLabel.Visibility = Visibility.Hidden;
 
+            this.Close();
 
         }
 
@@ -301,8 +288,9 @@ namespace BeatSage_Downloader
             this.Close();
         }
 
-        public async void ImportPlaylist(object sender, RoutedEventArgs e)
+        public void ImportPlaylist(object sender, RoutedEventArgs e)
         {
+            loadingLabel.Visibility = Visibility.Visible;
             try
             {
                 List<string> youtubeURLS = DownloadManager.RetrieveYouTubePlaylist(playlistURLTextBox.Text);
@@ -325,17 +313,12 @@ namespace BeatSage_Downloader
             }
             catch
             {
-                ErrorPlaylistLabel.Visibility = Visibility.Visible;
-                ErrorLabelRectangle.Visibility = Visibility.Visible;
 
-                await Task.Delay(2000);
+                RaiseAnError("Please Enter a Valid YouTube Playlist URL");
 
-                ErrorPlaylistLabel.Visibility = Visibility.Hidden;
-                ErrorLabelRectangle.Visibility = Visibility.Hidden;
-                
             }
 
-            
+            loadingLabel.Visibility = Visibility.Hidden;
         }
 
         private void ErrorModeLabel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -398,8 +381,22 @@ namespace BeatSage_Downloader
             }
         }
         
+        public async void RaiseAnError(string errorText)
+        {
+            ErrorLabel.Content = errorText;
+            ErrorLabel.Visibility = Visibility.Visible;
+            ErrorLabelRectangle.Visibility = Visibility.Visible;
+
+            await Task.Delay(2000);
+
+            ErrorLabel.Visibility = Visibility.Hidden;
+            ErrorLabelRectangle.Visibility = Visibility.Hidden;
+        }
+
         public void GetMP3Files(object sender, RoutedEventArgs e)
         {
+            loadingLabel.Visibility = Visibility.Visible;
+
             using (var dialog = new System.Windows.Forms.OpenFileDialog())
             {
                 dialog.Multiselect = true;
@@ -425,11 +422,26 @@ namespace BeatSage_Downloader
 
                     foreach (string file in files)
                     {
+                        var size = new FileInfo(file).Length / 1024 / 1024;
+
+                        if (size > 30)
+                        {
+                            RaiseAnError("Please Select Files With A Maxium Size of 30MB");
+                            continue;
+                        }
+                        else if (TagLib.File.Create(file).Properties.Duration.TotalMinutes > 10.0)
+                        {
+                            RaiseAnError("Please Select Files With A Maxium Length of 10 Minutes");
+                            continue;
+                        }
+
                         linksTextBox.AppendText(file + "\n");
                     }
                 }
 
             }
+
+            loadingLabel.Visibility = Visibility.Hidden;
         }
     }
 }
