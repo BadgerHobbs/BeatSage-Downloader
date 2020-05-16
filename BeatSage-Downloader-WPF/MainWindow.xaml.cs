@@ -434,15 +434,18 @@ namespace BeatSage_Downloader
             string artist = "";
             string title = "";
 
+            var invalids = System.IO.Path.GetInvalidFileNameChars();
+
             if (tagFile.Tag.FirstPerformer != null)
             {
-                artist = tagFile.Tag.FirstPerformer;
+                artist = String.Join("_", tagFile.Tag.FirstPerformer.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
             }
 
             if (tagFile.Tag.Title != null)
             {
-                title = tagFile.Tag.Title;
+                title = String.Join("_", tagFile.Tag.Title.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
             }
+            
 
             download.Artist = artist;
             download.Title = title;
