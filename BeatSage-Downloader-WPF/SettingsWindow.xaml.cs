@@ -42,8 +42,6 @@ namespace BeatSage_Downloader
                 }
 
             }
-
-            this.Close();
         }
 
         public void SaveButton(object sender, RoutedEventArgs e)

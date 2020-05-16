@@ -75,6 +75,9 @@ namespace BeatSage_Downloader
         private string difficulties;
         private string gameModes;
         private string songEvents;
+        private string filePath;
+        private string fileName;
+        private string identifier;
 
         public int Number
         {
@@ -97,6 +100,10 @@ namespace BeatSage_Downloader
             set
             {
                 youtubeID = value;
+                if ((FileName == "") || (FileName == null))
+                {
+                    Identifier = value;
+                }
                 RaiseProperChanged();
             }
         }
@@ -179,6 +186,48 @@ namespace BeatSage_Downloader
             }
         }
 
+        public string FilePath
+        {
+            get
+            {
+                return filePath;
+            }
+            set
+            {
+                filePath = value;
+                RaiseProperChanged();
+            }
+        }
+
+        public string FileName
+        {
+            get
+            {
+                return fileName;
+            }
+            set
+            {
+                fileName = value;
+                if ((YoutubeID == "") || (YoutubeID == null))
+                {
+                    Identifier = fileName;
+                }
+                RaiseProperChanged();
+            }
+        }
+
+        public string Identifier
+        {
+            get
+            {
+                return identifier;
+            }
+            set
+            {
+                identifier = value;
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void RaiseProperChanged([CallerMemberName] string caller = "")
@@ -232,14 +281,15 @@ namespace BeatSage_Downloader
                 {
                     for (int i = previousNumberOfDownloads; i < downloads.Count; i++)
                     {
-                        // Download Item
-                        string itemUrl = "https://www.youtube.com/watch?v=" + downloads[i].YoutubeID;
-
-                        //CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
-
-                        await RetrieveMetaData(itemUrl, downloads[i]);
-
-                        //CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
+                        if ((downloads[i].YoutubeID != "") && (downloads[i].YoutubeID != null))
+                        {
+                            string itemUrl = "https://www.youtube.com/watch?v=" + downloads[i].YoutubeID;
+                            await RetrieveMetaData(itemUrl, downloads[i]);
+                        }
+                        else if ((downloads[i].FilePath != "") && (downloads[i].FilePath != null))
+                        {
+                            await CreateCustomLevelFromFile(downloads[i]);
+                        }
                     }
 
                     previousNumberOfDownloads = downloads.Count;
@@ -375,8 +425,55 @@ namespace BeatSage_Downloader
             await CheckDownload(levelID, trackName, artistName, download);
         }
 
+        static async Task CreateCustomLevelFromFile(Download download)
+        {
+            download.Status = "Uploading File";
+
+            TagLib.File tagFile = TagLib.File.Create(download.FilePath);
+            string artist = tagFile.Tag.FirstAlbumArtist;
+            string title = tagFile.Tag.Title;
+            
+            byte[] bytes = System.IO.File.ReadAllBytes(download.FilePath);
+
+            //HttpContent fileStreamContent = new StreamContent(fileStream);
+
+            //var stream = File.OpenRead("Keane - Somewhere Only We Know.mp3");
+            //var streamContent = new StreamContent(stream);
+
+            //HttpContent bytesContent = new ByteArrayContent(bytes);
+
+            string boundary = "----WebKitFormBoundaryaA38RFcmCeKFPOms";
+            var content = new MultipartFormDataContent(boundary);
+            content.Headers.Remove("Content-Type");
+            content.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary);
+            //content.Add(streamContent, "audio_file");
+            content.Add(new ByteArrayContent(bytes), "audio_file", download.FileName);
+            content.Add(new StringContent(title), "audio_metadata_title");
+            content.Add(new StringContent(artist), "audio_metadata_artist");
+            content.Add(new StringContent("Expert,ExpertPlus"), "difficulties");
+            content.Add(new StringContent("Standard"), "modes");
+            content.Add(new StringContent(""), "events");
+            content.Add(new StringContent("0"), "seed");
+
+            var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content);
+
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(responseString);
+
+            JObject jsonString = JObject.Parse(responseString);
+
+            string levelID = (string)jsonString["id"];
+
+            Console.WriteLine(levelID);
+
+            await CheckDownload(levelID, title, artist, download);
+        }
+
         static async Task CheckDownload(string levelId, string trackName, string artistName, Download download)
         {
+            download.Status = "Generating Custom Level";
+            
             string url = "https://beatsage.com/beatsaber_custom_level_heartbeat/" + levelId;
 
             Console.WriteLine(url);
@@ -441,6 +538,11 @@ namespace BeatSage_Downloader
             {
                 Properties.Settings.Default.outputDirectory = @"Downloads";
                 Properties.Settings.Default.Save();
+            }
+
+            if (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))
+            {
+                Directory.Delete(Properties.Settings.Default.outputDirectory + @"\" + fileName,true);
             }
 
             ZipFile.ExtractToDirectory(fileName + ".zip", Properties.Settings.Default.outputDirectory + @"\" + fileName);

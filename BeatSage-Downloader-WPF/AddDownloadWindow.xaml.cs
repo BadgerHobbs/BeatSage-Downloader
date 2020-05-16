@@ -246,21 +246,49 @@ namespace BeatSage_Downloader
                     continue;
                 }
 
-                string youtubeID = linksTextBox.GetLineText(i).Replace("https://www.youtube.com/watch?v=", "").TrimEnd('\r', '\n');
-
-                Console.WriteLine("Youtube ID: " + youtubeID);
-
-                MainWindow.downloadManager.Add(new Download()
+                if (linksTextBox.GetLineText(i).Contains("https://www.youtube.com/watch?v="))
                 {
-                    Number = DownloadManager.downloads.Count + 1,
-                    YoutubeID = youtubeID,
-                    Title = "???",
-                    Artist = "???",
-                    Status = "Queued",
-                    Difficulties = selectedDifficulties,
-                    GameModes = selectedGameModes,
-                    SongEvents = selectedSongEvents,
-                });
+                    string youtubeID = linksTextBox.GetLineText(i).Replace("https://www.youtube.com/watch?v=", "").TrimEnd('\r', '\n');
+
+                    Console.WriteLine("Youtube ID: " + youtubeID);
+
+                    MainWindow.downloadManager.Add(new Download()
+                    {
+                        Number = DownloadManager.downloads.Count + 1,
+                        YoutubeID = youtubeID,
+                        Title = "???",
+                        Artist = "???",
+                        Status = "Queued",
+                        Difficulties = selectedDifficulties,
+                        GameModes = selectedGameModes,
+                        SongEvents = selectedSongEvents,
+                        FilePath = "",
+                        FileName = ""
+                    });
+                }
+                else if (linksTextBox.GetLineText(i).Contains(".mp3"))
+                {
+                    string filePath = linksTextBox.GetLineText(i).TrimEnd('\r', '\n');
+
+                    Console.WriteLine("File Path: " + filePath);
+
+                    MainWindow.downloadManager.Add(new Download()
+                    {
+                        Number = DownloadManager.downloads.Count + 1,
+                        YoutubeID = "",
+                        Title = "???",
+                        Artist = "???",
+                        Status = "Queued",
+                        Difficulties = selectedDifficulties,
+                        GameModes = selectedGameModes,
+                        SongEvents = selectedSongEvents,
+                        FilePath = filePath,
+                        FileName = System.IO.Path.GetFileName(filePath)
+                    });
+                }
+
+
+
             }
 
             this.Close();
@@ -278,6 +306,17 @@ namespace BeatSage_Downloader
             try
             {
                 List<string> youtubeURLS = DownloadManager.RetrieveYouTubePlaylist(playlistURLTextBox.Text);
+                
+                if (linksTextBox.Text == "Enter YouTube Links Here (Separate Lines)")
+                {
+                    var converter = new System.Windows.Media.BrushConverter();
+                    linksTextBox.Text = "";
+                    linksTextBox.Foreground = (Brush)converter.ConvertFromString("#FFFFFFFF");
+                }
+                else
+                {
+                    linksTextBox.AppendText("\n");
+                }
 
                 foreach (string youtubeURL in youtubeURLS)
                 {
@@ -312,6 +351,84 @@ namespace BeatSage_Downloader
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(caller));
+            }
+        }
+
+        public void PlaylistTextBoxFocusChange(object sender, RoutedEventArgs e)
+        {
+            var converter = new System.Windows.Media.BrushConverter();
+
+            if (playlistURLTextBox.IsFocused == true)
+            {
+                if (playlistURLTextBox.Text == "Enter YouTube Playlist Link Here")
+                {
+                    playlistURLTextBox.Text = "";
+                    playlistURLTextBox.Foreground = (Brush)converter.ConvertFromString("#FFFFFFFF");
+                }
+            }
+            else
+            {
+                if (playlistURLTextBox.Text == "")
+                {
+                    playlistURLTextBox.Text = "Enter YouTube Playlist Link Here";
+                    playlistURLTextBox.Foreground = (Brush)converter.ConvertFromString("#FF959595");
+                }
+            }
+        }
+
+        public void LinksTextBoxFocusChange(object sender, RoutedEventArgs e)
+        {
+            var converter = new System.Windows.Media.BrushConverter();
+
+            if (linksTextBox.IsFocused == true)
+            {
+                if (linksTextBox.Text == "Enter YouTube Links Here (Separate Lines)")
+                {
+                    linksTextBox.Text = "";
+                    linksTextBox.Foreground = (Brush)converter.ConvertFromString("#FFFFFFFF");
+                }
+            }
+            else
+            {
+                if (linksTextBox.Text == "")
+                {
+                    linksTextBox.Text = "Enter YouTube Links Here (Separate Lines)";
+                    linksTextBox.Foreground = (Brush)converter.ConvertFromString("#FF959595");
+                }
+            }
+        }
+        
+        public void GetMP3Files(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                dialog.Multiselect = true;
+                dialog.Filter = "MP3 Files (*.mp3)|*.mp3";
+                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+
+
+                if (result.ToString() == "OK" && !string.IsNullOrWhiteSpace(dialog.FileNames[0]))
+                {
+                    if (linksTextBox.Text == "Enter YouTube Links Here (Separate Lines)")
+                    {
+                        var converter = new System.Windows.Media.BrushConverter();
+                        linksTextBox.Text = "";
+                        linksTextBox.Foreground = (Brush)converter.ConvertFromString("#FFFFFFFF");
+                    }
+                    else
+                    {
+                        linksTextBox.AppendText("\n");
+                    }
+
+                    string[] files = dialog.FileNames;
+
+
+                    foreach (string file in files)
+                    {
+                        linksTextBox.AppendText(file + "\n");
+                    }
+                }
+
             }
         }
     }
