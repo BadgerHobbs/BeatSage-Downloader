@@ -1,6 +1,6 @@
 ![Image](https://i.ibb.co/mRb1SkW/image.png)
 
-![Download Here!](https://i.ibb.co/LgcPy48/ezgif-com-gif-maker-1.png)
+[![Download Here!](https://i.ibb.co/LgcPy48/ezgif-com-gif-maker-1.png)](https://github.com/BadgerHobbs/BeatSage-Downloader/releases)
 
 ### Please Note: This software is unofficial and in no way affiliated with [Beat Sage](https://beatsage.com/#)
 
