@@ -9,7 +9,7 @@
 Features
 ======
 
-- Download Beat Sage maps straight through a desktop app using their YouTube links
+- Generate and download Beat Sage maps straight through a desktop app
 - Queue up-to 100 songs to be generated
 - Select from the avalible difficulties, modes and events
 - Upload MP3s to generate maps from (Up to 10 minutes and under 30MB)
