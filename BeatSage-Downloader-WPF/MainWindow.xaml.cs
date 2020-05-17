@@ -388,6 +388,12 @@ namespace BeatSage_Downloader
                 artistName = (string)responseData["uploader"];
             }
 
+
+            var invalids = System.IO.Path.GetInvalidFileNameChars();
+
+            trackName = String.Join("_", trackName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+            artistName = String.Join("_", artistName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+
             Console.WriteLine("trackName: " + trackName);
             Console.WriteLine("artistName: " + artistName);
 
