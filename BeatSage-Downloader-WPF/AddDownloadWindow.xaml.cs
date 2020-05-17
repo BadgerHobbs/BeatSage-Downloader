@@ -318,6 +318,7 @@ namespace BeatSage_Downloader
 
             }
 
+            playlistURLTextBox.Text = "";
             loadingLabel.Visibility = Visibility.Hidden;
         }
 
