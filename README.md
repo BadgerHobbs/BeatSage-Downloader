@@ -33,6 +33,8 @@ Usage
 Screenshots
 ======
 
-![Image](https://i.ibb.co/jyTj89r/image.png)
+![Image](https://i.ibb.co/0nmc1By/image.png)
 
-![Image](https://i.ibb.co/23zQ9XF/image.png)
+![Image](https://i.ibb.co/Jvw9ppq/image.png)
+
+![Image](https://i.ibb.co/R9tTwSQ/image.png)
