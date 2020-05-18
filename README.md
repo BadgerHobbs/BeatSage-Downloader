@@ -11,10 +11,11 @@ Features
 
 - Generate and download Beat Sage maps straight through a desktop app
 - Queue up-to 100 songs to be generated
-- Select from the avalible difficulties, modes and events
+- Select from the avalible difficulties, modes, events and maps
 - Upload MP3s to generate maps from (Up to 10 minutes and under 30MB)
 - Paste in lists of YouTube songs you want to download
 - Directly import YouTube and YouTube music playlists
+- Saves your previous options so you don't have to keep selecting your favourites
 - Select your Beat Saber install directory as the output, add maps directly into your game
 
 
@@ -35,6 +36,6 @@ Screenshots
 
 ![Image](https://i.ibb.co/0nmc1By/image.png)
 
-![Image](https://i.ibb.co/Jvw9ppq/image.png)
+![Image](https://i.ibb.co/jwLZ2Qy/image.png)
 
 ![Image](https://i.ibb.co/R9tTwSQ/image.png)
