@@ -70,5 +70,29 @@ namespace BeatSage_Downloader.Properties {
                 this["previousGameEvents"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Default")]
+        public string previousEnvironment {
+            get {
+                return ((string)(this["previousEnvironment"]));
+            }
+            set {
+                this["previousEnvironment"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("V2")]
+        public string previousModelVersion {
+            get {
+                return ((string)(this["previousModelVersion"]));
+            }
+            set {
+                this["previousModelVersion"] = value;
+            }
+        }
     }
 }

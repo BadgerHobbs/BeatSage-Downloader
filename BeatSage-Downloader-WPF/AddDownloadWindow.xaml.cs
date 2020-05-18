@@ -33,6 +33,8 @@ namespace BeatSage_Downloader
             string previousDifficulties = Properties.Settings.Default.previousDifficulties;
             string previousGameModes = Properties.Settings.Default.previousGameModes;
             string previousSongEvents = Properties.Settings.Default.previousGameEvents;
+            string previousEnvironment = Properties.Settings.Default.previousEnvironment;
+            string previousModelVersion = Properties.Settings.Default.previousModelVersion;
 
             if (previousDifficulties.Contains("Normal"))
             {
@@ -70,12 +72,12 @@ namespace BeatSage_Downloader
                 GameModeOneSaberCheckBox.IsChecked = true;
             }
 
-            if (previousGameModes.Contains("90Degrees"))
+            if (previousGameModes.Contains("90Degree"))
             {
                 GameMode90DegreesCheckBox.IsChecked = true;
             }
 
-            if (previousGameModes.Contains("360Degrees"))
+            if (previousGameModes.Contains("360Degree"))
             {
                 GameMode360DegreesCheckBox.IsChecked = true;
             }
@@ -90,7 +92,40 @@ namespace BeatSage_Downloader
             {
                 SongEventsBombsCheckBox.IsChecked = true;
             }
-            
+
+            if (previousSongEvents.Contains("Obstacles"))
+            {
+                SongEventsObstaclesCheckBox.IsChecked = true;
+            }
+
+            if (previousSongEvents.Contains("LightShow"))
+            {
+                SongEventsLightShowCheckBox.IsChecked = true;
+            }
+
+            if ((previousModelVersion != "") || (previousModelVersion != null))
+            {
+                foreach (ComboBoxItem cbi in ModelVersionComboBox.Items)
+                {
+                    if (cbi.Content.ToString() == previousModelVersion)
+                    {
+                        cbi.IsSelected = true;
+                    }
+                }
+            }
+
+            if ((previousEnvironment != "") || (previousEnvironment != null))
+            {
+                foreach (ComboBoxItem cbi in EnvironmentComboBox.Items)
+                {
+                    if (cbi.Content.ToString() == previousEnvironment)
+                    {
+                        cbi.IsSelected = true;
+                    }
+                }
+            }
+
+
         }
 
         public void AddDownloads(object sender, RoutedEventArgs e)
@@ -102,6 +137,8 @@ namespace BeatSage_Downloader
             string selectedDifficulties = "";
             string selectedGameModes = "";
             string selectedSongEvents = "";
+            string selectedEnvironment = "";
+            string selectedModelVersion = "";
 
             bool difficultySelected = false;
             bool gameModeSelected = false;
@@ -118,15 +155,6 @@ namespace BeatSage_Downloader
 
             if (difficultySelected == true)
             {
-                if (DifficultyNormalCheckBox.IsChecked == true)
-                {
-                    selectedDifficulties += "Normal,";
-                }
-
-                if (DifficultyHardCheckBox.IsChecked == true)
-                {
-                    selectedDifficulties += "Hard,";
-                }
 
                 if (DifficultyExpertCheckBox.IsChecked == true)
                 {
@@ -138,10 +166,20 @@ namespace BeatSage_Downloader
                     selectedDifficulties += "ExpertPlus,";
                 }
 
+                if (DifficultyNormalCheckBox.IsChecked == true)
+                {
+                    selectedDifficulties += "Normal,";
+                }
+
+                if (DifficultyHardCheckBox.IsChecked == true)
+                {
+                    selectedDifficulties += "Hard,";
+                }
+
                 if (selectedDifficulties[selectedDifficulties.Count() - 1] == ',')
                 {
                     selectedDifficulties = selectedDifficulties.Remove(selectedDifficulties.Count() - 1);
-                    
+
                     Properties.Settings.Default.previousDifficulties = selectedDifficulties;
                     Properties.Settings.Default.Save();
                 }
@@ -162,6 +200,11 @@ namespace BeatSage_Downloader
                     selectedGameModes += "Standard,";
                 }
 
+                if (GameMode90DegreesCheckBox.IsChecked == true)
+                {
+                    selectedGameModes += "90Degree,";
+                }
+
                 if (GameModeNoArrowsCheckBox.IsChecked == true)
                 {
                     selectedGameModes += "NoArrows,";
@@ -172,14 +215,9 @@ namespace BeatSage_Downloader
                     selectedGameModes += "OneSaber,";
                 }
 
-                if (GameMode90DegreesCheckBox.IsChecked == true)
-                {
-                    selectedGameModes += "90Degrees,";
-                }
-
                 if (GameMode360DegreesCheckBox.IsChecked == true)
                 {
-                    selectedGameModes += "360Degrees,";
+                    selectedGameModes += "360Degree,";
                 }
 
                 if (selectedGameModes[selectedGameModes.Count() - 1] == ',')
@@ -199,14 +237,24 @@ namespace BeatSage_Downloader
                 return;
             }
 
+            if (SongEventDotBlocksCheckBox.IsChecked == true)
+            {
+                selectedSongEvents += "DotBlocks,";
+            }
+
+            if (SongEventsObstaclesCheckBox.IsChecked == true)
+            {
+                selectedSongEvents += "Obstacles,";
+            }
+
             if (SongEventsBombsCheckBox.IsChecked == true)
             {
                 selectedSongEvents += "Bombs,";
             }
 
-            if (SongEventDotBlocksCheckBox.IsChecked == true)
+            if (SongEventsLightShowCheckBox.IsChecked == true)
             {
-                selectedSongEvents += "DotBlocks,";
+                selectedSongEvents += "LightShow,";
             }
 
             if ((selectedSongEvents != "") && (selectedSongEvents[selectedSongEvents.Count() - 1] == ','))
@@ -216,6 +264,31 @@ namespace BeatSage_Downloader
                 Properties.Settings.Default.previousGameEvents = selectedSongEvents;
                 Properties.Settings.Default.Save();
             }
+
+            Properties.Settings.Default.previousEnvironment = EnvironmentComboBox.Text;
+            Properties.Settings.Default.previousModelVersion = ModelVersionComboBox.Text;
+            Properties.Settings.Default.Save();
+
+            selectedEnvironment = GetSelectedEnvironment();
+
+            if (selectedEnvironment == "Random")
+            {
+                Random random = new Random();
+                int randomItemIndex = random.Next(EnvironmentComboBox.Items.Count);                
+                int index = 0;
+                foreach (ComboBoxItem cbi in EnvironmentComboBox.Items)
+                {
+                    index += 1;
+
+                    if (index == randomItemIndex)
+                    {
+                        selectedEnvironment = cbi.Tag.ToString() ;
+                        Console.WriteLine("Random Environment: " + selectedEnvironment);
+                    }
+                }
+            }
+
+            selectedModelVersion = GetSelectedModelVersion();
 
             for (int i = 0; i < linksTextBox.LineCount; i++)
             {
@@ -227,7 +300,7 @@ namespace BeatSage_Downloader
                     return;
                 }
 
-                if (linksTextBox.GetLineText(i).Replace(" ", "").Replace("\n","").Replace("\r","").Count() < 5)
+                if (linksTextBox.GetLineText(i).Replace(" ", "").Replace("\n", "").Replace("\r", "").Count() < 5)
                 {
                     continue;
                 }
@@ -249,7 +322,9 @@ namespace BeatSage_Downloader
                         GameModes = selectedGameModes,
                         SongEvents = selectedSongEvents,
                         FilePath = "",
-                        FileName = ""
+                        FileName = "",
+                        Environment = selectedEnvironment,
+                        ModelVersion = selectedModelVersion
                     });
                 }
                 else if (linksTextBox.GetLineText(i).Contains(".mp3"))
@@ -269,12 +344,11 @@ namespace BeatSage_Downloader
                         GameModes = selectedGameModes,
                         SongEvents = selectedSongEvents,
                         FilePath = filePath,
-                        FileName = System.IO.Path.GetFileName(filePath)
+                        FileName = System.IO.Path.GetFileName(filePath),
+                        Environment = selectedEnvironment,
+                        ModelVersion = selectedModelVersion
                     });
                 }
-
-
-
             }
 
             loadingLabel.Visibility = Visibility.Hidden;
@@ -294,7 +368,7 @@ namespace BeatSage_Downloader
             try
             {
                 List<string> youtubeURLS = DownloadManager.RetrieveYouTubePlaylist(playlistURLTextBox.Text);
-                
+
                 if (linksTextBox.Text == "Enter YouTube Links Here (Separate Lines)")
                 {
                     var converter = new System.Windows.Media.BrushConverter();
@@ -381,7 +455,7 @@ namespace BeatSage_Downloader
                 }
             }
         }
-        
+
         public async void RaiseAnError(string errorText)
         {
             ErrorLabel.Content = errorText;
@@ -444,5 +518,41 @@ namespace BeatSage_Downloader
 
             loadingLabel.Visibility = Visibility.Hidden;
         }
+
+        public string GetSelectedEnvironment()
+        {
+            string selectedEnvironment = ((ComboBoxItem)EnvironmentComboBox.SelectedItem).Tag.ToString();
+
+            return selectedEnvironment;
+        }
+
+        public string GetSelectedModelVersion()
+        {
+            string selectedModelVersion = ((ComboBoxItem)ModelVersionComboBox.SelectedItem).Tag.ToString();
+
+            return selectedModelVersion;
+        }
+
+        public void ModelVersionChanged(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (((ComboBoxItem)ModelVersionComboBox.SelectedItem).Tag.ToString() == "v1")
+                {
+                    GameModeOneSaberCheckBox.IsEnabled = false;
+                    GameMode90DegreesCheckBox.IsEnabled = false;
+                    SongEventsObstaclesCheckBox.IsEnabled = false;
+                }
+                else
+                {
+                    GameModeOneSaberCheckBox.IsEnabled = true;
+                    GameMode90DegreesCheckBox.IsEnabled = true;
+                    SongEventsObstaclesCheckBox.IsEnabled = true;
+                }
+            }
+            catch {}
+            
+        }
+
     }
 }

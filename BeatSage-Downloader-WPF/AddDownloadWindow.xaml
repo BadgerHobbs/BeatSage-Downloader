@@ -7,7 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BeatSage_Downloader"
         mc:Ignorable="d"
-        Title="Add Download" Height="350" Width="600"
+        Title="Add Download" Height="450" Width="650"
         
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         BorderThickness="0"
@@ -18,6 +18,10 @@
         >
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="49*"/>
+            <RowDefinition Height="372*"/>
+        </Grid.RowDefinitions>
 
         <Button
             Content="Upload MP3"
@@ -27,7 +31,7 @@
             Height="10"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Margin="200,10,0,0"      
+            Margin="250,10,0,0"      
             Padding="0,0,0,0"
             >
 
@@ -40,10 +44,10 @@
             Height="10"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Margin="200,40,0,0"
+            Margin="250,40,0,0"
             GotFocus="PlaylistTextBoxFocusChange"
             LostFocus="PlaylistTextBoxFocusChange" 
-            Foreground="#FF959595"
+            Foreground="#FF959595" Grid.RowSpan="2"
             >
 
         </TextBox>
@@ -56,8 +60,8 @@
             Height="10"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Margin="460,40,0,0"      
-            Padding="0,0,0,0"
+            Margin="510,40,0,0"      
+            Padding="0,0,0,0" Grid.RowSpan="2"
             >
 
         </Button>
@@ -67,15 +71,15 @@
             Text="Enter YouTube Links Here (Separate Lines)"
             AcceptsReturn="True"
             Width="380"
-            Height="210"
+            Height="305"
             HorizontalAlignment="Left"
-            VerticalAlignment="Bottom"
-            Margin="200,0,0,40"          
+            VerticalAlignment="Top"
+            Margin="250,26.488,0,0"          
             GotFocus="LinksTextBoxFocusChange"
             LostFocus="LinksTextBoxFocusChange" 
             Foreground="#FF959595"  
             VerticalScrollBarVisibility="Auto"
-            HorizontalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Auto" Grid.Row="1"
             >
 
         </TextBox>
@@ -91,9 +95,9 @@
             VerticalAlignment="Bottom"   
             VerticalContentAlignment="Center"
             HorizontalContentAlignment="Center"
-            Foreground="#FF959595"
+            Foreground="#FF959595" Grid.Row="1"
             >
-            
+
         </Label>
 
         <Button
@@ -104,8 +108,8 @@
             Height="10"
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"
-            Margin="490,0,0,10"   
-            Padding="0,0,0,0"  
+            Margin="540,0,0,10"   
+            Padding="0,0,0,0" Grid.Row="1"  
             >
 
         </Button>
@@ -118,8 +122,8 @@
             Height="10"
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"
-            Margin="350,0,0,10"      
-            Padding="0,0,0,0"
+            Margin="400,0,0,10"      
+            Padding="0,0,0,0" Grid.Row="1"
             >
 
         </Button>
@@ -127,98 +131,97 @@
         <Rectangle 
             Fill="#252525"
             HorizontalAlignment="Left" 
-            Height="319" 
-            VerticalAlignment="Top" 
-            Width="192"
+            VerticalAlignment="Stretch" 
+            Width="240" Grid.RowSpan="2"
             />
 
         <Rectangle 
             Fill="#FF2E2E2E"
             HorizontalAlignment="Left" 
-            Height="80" 
+            Height="78" 
             VerticalAlignment="Top" 
-            Width="173" Margin="8,10,0,0"
+            Width="220" Margin="10,10,0,0" Grid.RowSpan="2"
             />
 
         <CheckBox 
             Content="Normal" 
             Name="DifficultyNormalCheckBox"
             HorizontalAlignment="Left" 
-            Margin="18,40,0,0" 
-            VerticalAlignment="Top"
+            Margin="20,37,0,0" 
+            VerticalAlignment="Top" Grid.RowSpan="2"
             />
 
         <CheckBox 
             Content="Hard" 
             Name="DifficultyHardCheckBox"
             HorizontalAlignment="Left" 
-            Margin="18,64,0,0" 
-            VerticalAlignment="Top"
+            Margin="20,12,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
             />
 
         <CheckBox 
             Content="Expert" 
             Name="DifficultyExpertCheckBox"
             HorizontalAlignment="Left" 
-            Margin="94,40,0,0" 
-            VerticalAlignment="Top"
+            Margin="130,38,0,0" 
+            VerticalAlignment="Top" Grid.RowSpan="2"
             />
 
         <CheckBox 
             Content="Expert+" 
             Name="DifficultyExpertPlusCheckBox"
             HorizontalAlignment="Left" 
-            Margin="94,64,0,0" 
-            VerticalAlignment="Top"
+            Margin="130,12,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
             />
 
         <Label 
             Content="Difficulties" 
             HorizontalAlignment="Left" 
-            Margin="63,10,0,0" 
+            Margin="10,10,0,0" 
             VerticalAlignment="Top"
+            Width="220"
+            HorizontalContentAlignment="Center"
             />
 
         <Rectangle 
             Fill="#FF2E2E2E"
             HorizontalAlignment="Left" 
-            Height="149" 
+            Height="99" 
             VerticalAlignment="Top" 
-            Width="173" Margin="8,95,0,0"
+            Width="220" Margin="10,46,0,0" Grid.Row="1"
             />
 
         <CheckBox 
             Content="Standard" 
             Name="GameModeStandardCheckBox"
             HorizontalAlignment="Left" 
-            Margin="18,125,0,0" 
-            VerticalAlignment="Top"
+            Margin="20,72,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
             />
 
         <CheckBox 
             Content="No Arrows" 
             Name="GameModeNoArrowsCheckBox"
             HorizontalAlignment="Left" 
-            Margin="18,148,0,0" 
-            VerticalAlignment="Top"
+            Margin="130,72,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
             />
 
         <CheckBox 
-            IsEnabled="False"
             Content="One Saber" 
             Name="GameModeOneSaberCheckBox"
             HorizontalAlignment="Left" 
-            Margin="18,172,0,0" 
-            VerticalAlignment="Top"
+            Margin="20,95,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
             />
 
         <CheckBox 
             Content="90 Degrees" 
-            IsEnabled="False"
             Name="GameMode90DegreesCheckBox"
             HorizontalAlignment="Left" 
-            Margin="18,195,0,0" 
-            VerticalAlignment="Top"
+            Margin="130,95,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
             />
 
         <CheckBox 
@@ -226,46 +229,50 @@
             IsEnabled="False"
             Name="GameMode360DegreesCheckBox"
             HorizontalAlignment="Left" 
-            Margin="18,218,0,0" 
-            VerticalAlignment="Top"
+            Margin="20,118,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
             />
 
         <Label 
             Content="Game Modes" 
+            HorizontalContentAlignment="Center"
             HorizontalAlignment="Left" 
-            Margin="56,95,0,0" 
-            VerticalAlignment="Top"
+            Width="220"
+            Margin="10,46,0,0" 
+            VerticalAlignment="Top" RenderTransformOrigin="0.927,0.468" Grid.Row="1"
             />
 
         <Rectangle 
             Fill="#FF2E2E2E"
             HorizontalAlignment="Left" 
-            Height="63" 
+            Height="77" 
             VerticalAlignment="Top" 
-            Width="173" Margin="8,249,0,0"
+            Width="220" Margin="10,152,0,0" Grid.Row="1"
             />
 
         <CheckBox 
             Content="Bombs" 
             Name="SongEventsBombsCheckBox"
             HorizontalAlignment="Left" 
-            Margin="18,284,0,0" 
-            VerticalAlignment="Top"
+            Margin="20,180,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
             />
 
         <CheckBox 
             Content="Dot Blocks" 
             Name="SongEventDotBlocksCheckBox"
             HorizontalAlignment="Left" 
-            Margin="94,284,0,0" 
-            VerticalAlignment="Top"
+            Margin="130,180,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
             />
 
         <Label 
             Content="Song Events" 
             HorizontalAlignment="Left" 
-            Margin="56,249,0,0" 
+            Margin="10,152,0,0" 
+            Width="220"
             VerticalAlignment="Top"
+            HorizontalContentAlignment="Center" Grid.Row="1"
             />
 
 
@@ -287,13 +294,108 @@
             Width="300"
             Height="28" 
             Content="Please Select At Least One Game Mode"
-            Margin="0,-6,0,0"
+            Margin="172,-6,172,0"
             Visibility="Hidden"
             >
 
         </Label>
 
+        <CheckBox 
+            Content="Obstacles" 
+            x:Name="SongEventsObstaclesCheckBox"
+            HorizontalAlignment="Left" 
+            Margin="20,203,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
+            />
+        <CheckBox 
+            Content="Light Show" 
+            IsEnabled="False"
+            x:Name="SongEventsLightShowCheckBox"
+            HorizontalAlignment="Left" 
+            Margin="130,203,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
+            />
+
+        <Rectangle 
+            Fill="#FF2E2E2E"
+            HorizontalAlignment="Left" 
+            Height="61" 
+            VerticalAlignment="Top" 
+            Width="220" Margin="10,236,0,0" Grid.Row="1"
+            />
+        <Label 
+            Content="Environment" 
+            HorizontalAlignment="Left" 
+            Margin="10,236,0,0" 
+            Width="220"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center" Grid.Row="1"
+            />
+
+        <Rectangle 
+            Fill="#FF2E2E2E"
+            HorizontalAlignment="Left" 
+            Height="61" 
+            VerticalAlignment="Top" 
+            Width="220" Margin="10,304,0,0" Grid.Row="1"
+            />
+        <Label 
+            Content="Model Version" 
+            HorizontalAlignment="Left" 
+            Margin="10,304,0,0" 
+            Width="220"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center" 
+            RenderTransformOrigin="0.507,-0.159" Grid.Row="1"
+            />
+
+        <ComboBox 
+            Name="EnvironmentComboBox"
+            HorizontalAlignment="Left" 
+            Margin="20,263,0,0" 
+            VerticalAlignment="Top" 
+            Width="200" 
+            Grid.Row="1"
+            IsEditable="False"
+            >
+
+            <ComboBoxItem Content="Default" HorizontalAlignment="Left" Width="198" Selector.IsSelected="True" Tag="DefaultEnvironment"/>
+            <ComboBoxItem Content="Random" HorizontalAlignment="Left" Width="198" Tag="Random"/>
+            <ComboBoxItem Content="Origins" HorizontalAlignment="Left" Width="198" Tag="Origins"/>
+            <ComboBoxItem Content="Triangle" HorizontalAlignment="Left" Width="198" Tag="TriangleEnvironment"/>
+            <ComboBoxItem Content="Nice" HorizontalAlignment="Left" Width="198" Tag="NiceEnvironment"/>
+            <ComboBoxItem Content="Big Mirror" HorizontalAlignment="Left" Width="198" Tag="BigMirrorEnvironment"/>
+            <ComboBoxItem Content="Imagine Dragons" HorizontalAlignment="Left" Width="198" Tag="DragonsEnvironment"/>
+            <ComboBoxItem Content="K/DA" HorizontalAlignment="Left" Width="198" Tag="KDAEnvironment"/>
+            <ComboBoxItem Content="Monstercat" HorizontalAlignment="Left" Width="198" Tag="MonstercatEnvironment"/>
+            <ComboBoxItem Content="Crab Rave" HorizontalAlignment="Left" Width="198" Tag="CrabRaveEnvironment"/>
+            <ComboBoxItem Content="Panic at the Disco!" HorizontalAlignment="Left" Width="198" Tag="PanicEnvironment"/>
+            <ComboBoxItem Content="Rocket League" HorizontalAlignment="Left" Width="198" Tag="RocketEnvironment"/>
+            <ComboBoxItem Content="Green Day" HorizontalAlignment="Left" Width="198" Tag="GreenDayEnvironment"/>
+            <ComboBoxItem Content="Green Day Grenade" HorizontalAlignment="Left" Width="198" Tag="GreenDayGrenadeEnvironment"/>
+            <ComboBoxItem Content="Timbaland" HorizontalAlignment="Left" Width="198" Tag="TimbalandEnvironment"/>
+            <ComboBoxItem Content="Fit Beat" HorizontalAlignment="Left" Width="198" Tag="FitBeatEnvironment"/>
+
+        </ComboBox>
+
+        <ComboBox 
+            Name="ModelVersionComboBox"
+            HorizontalAlignment="Left" 
+            Margin="20,331,0,0" 
+            VerticalAlignment="Top" 
+            Width="200" 
+            Grid.Row="1"
+            IsEditable="False"
+            SelectionChanged="ModelVersionChanged"
+            >
+
+            <ComboBoxItem Content="V2" HorizontalAlignment="Left" Width="198" Selector.IsSelected="True" Tag="v2"/>
+            <ComboBoxItem Content="V2-Flow (Better flow, less creative)" HorizontalAlignment="Left" Width="198" Tag="v2-flow"/>
+            <ComboBoxItem Content="V1 (More unpredictable, less modes)" HorizontalAlignment="Left" Width="198" Tag="v1"/>
+            
+        </ComboBox>
+
     </Grid>
-    
-    
+
+
 </Controls:MetroWindow>

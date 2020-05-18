@@ -78,6 +78,8 @@ namespace BeatSage_Downloader
         private string filePath;
         private string fileName;
         private string identifier;
+        private string environment;
+        private string modelVersion;
 
         public int Number
         {
@@ -225,6 +227,33 @@ namespace BeatSage_Downloader
             set
             {
                 identifier = value;
+                RaiseProperChanged();
+            }
+        }
+
+        public string Environment
+        {
+            get
+            {
+                return environment;
+            }
+            set
+            {
+                environment = value;
+                RaiseProperChanged();
+            }
+        }
+
+        public string ModelVersion
+        {
+            get
+            {
+                return modelVersion;
+            }
+            set
+            {
+                modelVersion = value;
+                RaiseProperChanged();
             }
         }
 
@@ -414,7 +443,8 @@ namespace BeatSage_Downloader
             content.Add(new StringContent(download.Difficulties), "difficulties");
             content.Add(new StringContent(download.GameModes), "modes");
             content.Add(new StringContent(download.SongEvents), "events");
-            content.Add(new StringContent("0"), "seed");
+            content.Add(new StringContent(download.Environment), "environment");
+            content.Add(new StringContent(download.ModelVersion), "system_tag");
 
             var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content);
 
@@ -476,7 +506,8 @@ namespace BeatSage_Downloader
             content.Add(new StringContent("Expert,ExpertPlus"), "difficulties");
             content.Add(new StringContent("Standard"), "modes");
             content.Add(new StringContent(""), "events");
-            content.Add(new StringContent("0"), "seed");
+            content.Add(new StringContent(download.Environment), "environment");
+            content.Add(new StringContent(download.ModelVersion), "system_tag");
 
             var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content);
 
