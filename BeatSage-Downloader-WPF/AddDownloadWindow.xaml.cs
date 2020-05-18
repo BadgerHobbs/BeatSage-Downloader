@@ -307,7 +307,14 @@ namespace BeatSage_Downloader
 
                 if (linksTextBox.GetLineText(i).Contains("https://www.youtube.com/watch?v="))
                 {
+
+
                     string youtubeID = linksTextBox.GetLineText(i).Replace("https://www.youtube.com/watch?v=", "").TrimEnd('\r', '\n');
+
+                    if (youtubeID.Contains("&"))
+                    {
+                        youtubeID = youtubeID.Substring(0,youtubeID.IndexOf("&"));
+                    }
 
                     Console.WriteLine("Youtube ID: " + youtubeID);
 

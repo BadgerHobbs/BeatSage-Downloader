@@ -285,7 +285,7 @@ namespace BeatSage_Downloader
 
             httpClient.DefaultRequestHeaders.Add("Host", "beatsage.com");
             httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (compatible; Rigor/1.0.0; http://rigor.com)");
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "BeatSage-Downloader/1.1.1");
 
             Thread worker = new Thread(RunDownloads);
             worker.IsBackground = true;
