@@ -15,7 +15,7 @@ Features
 - Upload MP3s to generate maps from (Up to 10 minutes and under 30MB)
 - Paste in lists of YouTube songs you want to download
 - Directly import YouTube and YouTube music playlists
-- Saves your previous options so you don't have to keep selecting your favourites
+- Saves your previous options so you don't have to keep selecting your favorites
 - Select your Beat Saber install directory as the output, add maps directly into your game
 
 
