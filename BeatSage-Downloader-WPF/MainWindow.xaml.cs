@@ -285,7 +285,7 @@ namespace BeatSage_Downloader
 
             httpClient.DefaultRequestHeaders.Add("Host", "beatsage.com");
             httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "BeatSage-Downloader/1.1.1");
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "BeatSage-Downloader/1.1.2");
 
             Thread worker = new Thread(RunDownloads);
             worker.IsBackground = true;
@@ -503,9 +503,9 @@ namespace BeatSage_Downloader
             content.Add(new ByteArrayContent(bytes), "audio_file", download.FileName);
             content.Add(new StringContent(title), "audio_metadata_title");
             content.Add(new StringContent(artist), "audio_metadata_artist");
-            content.Add(new StringContent("Expert,ExpertPlus"), "difficulties");
-            content.Add(new StringContent("Standard"), "modes");
-            content.Add(new StringContent(""), "events");
+            content.Add(new StringContent(download.Difficulties), "difficulties");
+            content.Add(new StringContent(download.GameModes), "modes");
+            content.Add(new StringContent(download.SongEvents), "events");
             content.Add(new StringContent(download.Environment), "environment");
             content.Add(new StringContent(download.ModelVersion), "system_tag");
 
