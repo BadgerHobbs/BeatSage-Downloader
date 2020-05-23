@@ -305,11 +305,9 @@ namespace BeatSage_Downloader
                     continue;
                 }
 
-                if (linksTextBox.GetLineText(i).Contains("https://www.youtube.com/watch?v="))
+                if ((linksTextBox.GetLineText(i).Contains("https://www.youtube.com/watch?v=")) || (linksTextBox.GetLineText(i).Contains("https://youtu.be/")))
                 {
-
-
-                    string youtubeID = linksTextBox.GetLineText(i).Replace("https://www.youtube.com/watch?v=", "").TrimEnd('\r', '\n');
+                    string youtubeID = linksTextBox.GetLineText(i).Replace("https://youtu.be/", "").Replace("https://www.youtube.com/watch?v=", "").TrimEnd('\r', '\n');
 
                     if (youtubeID.Contains("&"))
                     {
