@@ -360,6 +360,7 @@
             >
 
             <ComboBoxItem Content="Default" HorizontalAlignment="Left" Width="198" Selector.IsSelected="True" Tag="DefaultEnvironment"/>
+            <ComboBoxItem Content="Random (Per Song)" HorizontalAlignment="Left" Width="198" Tag="RandomPerSong"/>
             <ComboBoxItem Content="Random" HorizontalAlignment="Left" Width="198" Tag="Random"/>
             <ComboBoxItem Content="Origins" HorizontalAlignment="Left" Width="198" Tag="Origins"/>
             <ComboBoxItem Content="Triangle" HorizontalAlignment="Left" Width="198" Tag="TriangleEnvironment"/>
