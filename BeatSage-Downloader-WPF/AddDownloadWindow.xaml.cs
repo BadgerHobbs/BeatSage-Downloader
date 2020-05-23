@@ -265,27 +265,30 @@ namespace BeatSage_Downloader
                 Properties.Settings.Default.Save();
             }
 
+            List<string> songEvents = new List<string>();
+
+            foreach (ComboBoxItem comboBoxItem in EnvironmentComboBox.Items)
+            {
+                if (!comboBoxItem.Tag.ToString().Contains("Random"))
+                {
+                    songEvents.Add(comboBoxItem.Tag.ToString());
+                    songEvents.Add(comboBoxItem.Tag.ToString());
+                }
+            }
+
             Properties.Settings.Default.previousEnvironment = EnvironmentComboBox.Text;
             Properties.Settings.Default.previousModelVersion = ModelVersionComboBox.Text;
             Properties.Settings.Default.Save();
 
             selectedEnvironment = GetSelectedEnvironment();
 
+            Random random = new Random();
+
             if (selectedEnvironment == "Random")
             {
-                Random random = new Random();
-                int randomItemIndex = random.Next(EnvironmentComboBox.Items.Count);                
-                int index = 0;
-                foreach (ComboBoxItem cbi in EnvironmentComboBox.Items)
-                {
-                    index += 1;
-
-                    if (index == randomItemIndex)
-                    {
-                        selectedEnvironment = cbi.Tag.ToString() ;
-                        Console.WriteLine("Random Environment: " + selectedEnvironment);
-                    }
-                }
+                int randomItemIndex = random.Next(songEvents.Count);
+                selectedEnvironment = songEvents[randomItemIndex];
+                Console.WriteLine("Random Environment: " + selectedEnvironment);
             }
 
             selectedModelVersion = GetSelectedModelVersion();
@@ -303,6 +306,13 @@ namespace BeatSage_Downloader
                 if (linksTextBox.GetLineText(i).Replace(" ", "").Replace("\n", "").Replace("\r", "").Count() < 5)
                 {
                     continue;
+                }
+
+                if (GetSelectedEnvironment() == "RandomPerSong")
+                {
+                    int randomItemIndex = random.Next(songEvents.Count);
+                    selectedEnvironment = songEvents[randomItemIndex];
+                    Console.WriteLine("Random Per Song Environment: " + selectedEnvironment);
                 }
 
                 if ((linksTextBox.GetLineText(i).Contains("https://www.youtube.com/watch?v=")) || (linksTextBox.GetLineText(i).Contains("https://youtu.be/")))
