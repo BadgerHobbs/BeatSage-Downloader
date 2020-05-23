@@ -315,9 +315,9 @@ namespace BeatSage_Downloader
                     Console.WriteLine("Random Per Song Environment: " + selectedEnvironment);
                 }
 
-                if ((linksTextBox.GetLineText(i).Contains("https://www.youtube.com/watch?v=")) || (linksTextBox.GetLineText(i).Contains("https://youtu.be/")))
+                if ((linksTextBox.GetLineText(i).Contains("youtube.com/watch?v=")) || (linksTextBox.GetLineText(i).Contains("https://youtu.be/")))
                 {
-                    string youtubeID = linksTextBox.GetLineText(i).Replace("https://youtu.be/", "").Replace("https://www.youtube.com/watch?v=", "").TrimEnd('\r', '\n');
+                    string youtubeID = linksTextBox.GetLineText(i).Replace("https://youtu.be/", "").Replace("music.", "www.").Replace("https://www.youtube.com/watch?v=", "").TrimEnd('\r', '\n');
 
                     if (youtubeID.Contains("&"))
                     {
