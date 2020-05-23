@@ -20,8 +20,5 @@
     <Setting Name="previousModelVersion" Type="System.String" Scope="User">
       <Value Profile="(Default)">V2</Value>
     </Setting>
-    <Setting Name="automaticExtraction" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

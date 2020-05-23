@@ -579,6 +579,14 @@ namespace BeatSage_Downloader
 
             WebClient client = new WebClient();
             Uri uri = new Uri(url);
+            client.DownloadFile(uri, fileName + ".zip");
+
+            download.Status = "Extracting";
+
+            if (Directory.Exists(fileName))
+            {
+                Directory.Delete(fileName);
+            }
 
             if (Properties.Settings.Default.outputDirectory == "")
             {
@@ -586,39 +594,17 @@ namespace BeatSage_Downloader
                 Properties.Settings.Default.Save();
             }
 
-            if (Properties.Settings.Default.automaticExtraction)
+            if (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))
             {
-                client.DownloadFile(uri, fileName + ".zip");
-
-                download.Status = "Extracting";
-
-                if (Directory.Exists(fileName))
-                {
-                    Directory.Delete(fileName);
-                }
-                
-                if (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))
-                {
-                    Directory.Delete(Properties.Settings.Default.outputDirectory + @"\" + fileName, true);
-                }
-
-                ZipFile.ExtractToDirectory(fileName + ".zip", Properties.Settings.Default.outputDirectory + @"\" + fileName);
-
-                if (File.Exists(fileName + ".zip"))
-                {
-                    File.Delete(fileName + ".zip");
-                }
-            }
-            else
-            {
-                if (File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip"))
-                {
-                    File.Delete(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip");
-                }
-
-                client.DownloadFile(uri, Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip");
+                Directory.Delete(Properties.Settings.Default.outputDirectory + @"\" + fileName,true);
             }
 
+            ZipFile.ExtractToDirectory(fileName + ".zip", Properties.Settings.Default.outputDirectory + @"\" + fileName);
+
+            if (File.Exists(fileName + ".zip"))
+            {
+                File.Delete(fileName + ".zip");
+            }
 
             download.Status = "Completed";
         }
