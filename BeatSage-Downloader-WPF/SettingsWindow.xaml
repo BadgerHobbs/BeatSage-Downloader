@@ -72,9 +72,17 @@
 
         <TextBlock 
             HorizontalAlignment="Left" 
-            Margin="10,41,10,0" 
+            Margin="10,72,0,0" 
             TextWrapping="Wrap" 
             Text="If blank downloads are saved in 'Downloads' in the program directory" 
+            VerticalAlignment="Top"
+            />
+        
+        <CheckBox 
+            Content="Enable Automatic Extraction" 
+            x:Name="AutomaticExtractionCheckBox"
+            HorizontalAlignment="Left" 
+            Margin="10,41,0,0" 
             VerticalAlignment="Top"
             />
 
