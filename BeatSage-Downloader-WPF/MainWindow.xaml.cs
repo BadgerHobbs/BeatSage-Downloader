@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.IO;
 using System.IO.Compression;
+using System.Diagnostics;
 
 namespace BeatSage_Downloader
 {
@@ -62,6 +63,12 @@ namespace BeatSage_Downloader
         {
             Properties.Settings.Default.Save();
 
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 
@@ -259,7 +266,7 @@ namespace BeatSage_Downloader
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void RaiseProperChanged([CallerMemberName] string caller = "")
+        public void RaiseProperChanged([CallerMemberName] string caller = "")
         {
 
             if (PropertyChanged != null)
@@ -268,8 +275,6 @@ namespace BeatSage_Downloader
             }
         }
     }
-
-    
 
     public class DownloadManager
     {
@@ -345,7 +350,7 @@ namespace BeatSage_Downloader
 
         public async static Task RetrieveMetaData(string url, Download download)
         {
-            download.Status = "Retrieving MetaData";
+            download.Status = "Retrieving Metadata";
 
             var values = new Dictionary<string, string>
             {
@@ -363,7 +368,6 @@ namespace BeatSage_Downloader
 
             //Read back the answer from server
             var responseString = await response.Content.ReadAsStringAsync();
-
             int attempts = 0;
 
             while (attempts < 2)
@@ -371,6 +375,13 @@ namespace BeatSage_Downloader
                 try
                 {
                     JObject jsonString = JObject.Parse(responseString);
+
+                    if ((int)jsonString["duration"] / 60 > 10)
+                    {
+                        Console.WriteLine("Failed, download greater than 10 mins!");
+                        download.Status = "Failed: Song >10 Minutes";
+                        return;
+                    }
 
                     await CreateCustomLevel(jsonString, download);
                     break;
