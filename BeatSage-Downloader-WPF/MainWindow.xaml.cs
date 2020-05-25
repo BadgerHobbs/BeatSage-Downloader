@@ -318,7 +318,16 @@ namespace BeatSage_Downloader
                         if ((downloads[i].YoutubeID != "") && (downloads[i].YoutubeID != null))
                         {
                             string itemUrl = "https://www.youtube.com/watch?v=" + downloads[i].YoutubeID;
-                            await RetrieveMetaData(itemUrl, downloads[i]);
+
+                            try
+                            {
+                                await RetrieveMetaData(itemUrl, downloads[i]);
+                            }
+                            catch
+                            {
+                                downloads[i].Status = "Failed: Unable To Retrieve Metadata";
+                            }
+
                         }
                         else if ((downloads[i].FilePath != "") && (downloads[i].FilePath != null))
                         {
@@ -398,7 +407,7 @@ namespace BeatSage_Downloader
             {
                 Console.WriteLine("Failed to Create Custom Level!");
 
-                download.Status = "Failed";
+                download.Status = "Failed: Unable To Create Level";
             }
         }
 
@@ -447,7 +456,12 @@ namespace BeatSage_Downloader
             var content = new MultipartFormDataContent(boundary);
             content.Headers.Remove("Content-Type");
             content.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary);
-            content.Add(new StringContent("null"), "audio_file");
+
+            //byte[] bytes = System.IO.File.ReadAllBytes("cover.jpg");
+            //content.Add(new ByteArrayContent(bytes), "cover_art", "cover.jpg");
+
+            //content.Add(new ByteArrayContent((byte[])responseData["beatsage_thumbnail"]), "cover_art", "cover.jpg");
+
             content.Add(new StringContent((string)responseData["webpage_url"]), "youtube_url");
             content.Add(new StringContent(trackName), "audio_metadata_title");
             content.Add(new StringContent(artistName), "audio_metadata_artist");
