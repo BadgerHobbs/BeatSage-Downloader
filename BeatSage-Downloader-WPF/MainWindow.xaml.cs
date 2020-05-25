@@ -326,6 +326,7 @@ namespace BeatSage_Downloader
                             catch
                             {
                                 downloads[i].Status = "Failed: Unable To Retrieve Metadata";
+                                return;
                             }
 
                         }
@@ -379,6 +380,12 @@ namespace BeatSage_Downloader
             var responseString = await response.Content.ReadAsStringAsync();
             int attempts = 0;
 
+            if (!response.IsSuccessStatusCode)
+            {
+                download.Status = "Failed: Unable To Retrieve Metadata";
+                return;
+            }
+
             while (attempts < 2)
             {
                 try
@@ -399,15 +406,10 @@ namespace BeatSage_Downloader
                 {
                     attempts += 1;
 
+                    Console.WriteLine("Failed to Create Custom Level!");
+                    download.Status = "Failed: Unable To Create Level";
                     System.Threading.Thread.Sleep(500);
                 }
-            }
-
-            if (attempts >= 2)
-            {
-                Console.WriteLine("Failed to Create Custom Level!");
-
-                download.Status = "Failed: Unable To Create Level";
             }
         }
 
