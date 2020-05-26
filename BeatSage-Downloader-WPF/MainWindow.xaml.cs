@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.IO;
 using System.IO.Compression;
+using System.Diagnostics;
 
 namespace BeatSage_Downloader
 {
@@ -62,6 +63,12 @@ namespace BeatSage_Downloader
         {
             Properties.Settings.Default.Save();
 
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 
@@ -259,7 +266,7 @@ namespace BeatSage_Downloader
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void RaiseProperChanged([CallerMemberName] string caller = "")
+        public void RaiseProperChanged([CallerMemberName] string caller = "")
         {
 
             if (PropertyChanged != null)
@@ -268,8 +275,6 @@ namespace BeatSage_Downloader
             }
         }
     }
-
-    
 
     public class DownloadManager
     {
@@ -323,6 +328,18 @@ namespace BeatSage_Downloader
                                     break;
                                 }
                             }
+                            string itemUrl = "https://www.youtube.com/watch?v=" + downloads[i].YoutubeID;
+
+                            try
+                            {
+                                await RetrieveMetaData(itemUrl, downloads[i]);
+                            }
+                            catch
+                            {
+                                downloads[i].Status = "Failed: Unable To Retrieve Metadata";
+                                return;
+                            }
+
                         }
                         else if ((downloads[i].FilePath != "") && (downloads[i].FilePath != null))
                         {
@@ -354,7 +371,7 @@ namespace BeatSage_Downloader
 
         public async static Task RetrieveMetaData(string url, Download download)
         {
-            download.Status = "Retrieving MetaData";
+            download.Status = "Retrieving Metadata";
 
             var values = new Dictionary<string, string>
             {
@@ -372,14 +389,26 @@ namespace BeatSage_Downloader
 
             //Read back the answer from server
             var responseString = await response.Content.ReadAsStringAsync();
-
             int attempts = 0;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                download.Status = "Failed: Unable To Retrieve Metadata";
+                return;
+            }
 
             while (attempts < 2)
             {
                 try
                 {
                     JObject jsonString = JObject.Parse(responseString);
+
+                    if ((int)jsonString["duration"] / 60 > 10)
+                    {
+                        Console.WriteLine("Failed, download greater than 10 mins!");
+                        download.Status = "Failed: Song >10 Minutes";
+                        return;
+                    }
 
                     await CreateCustomLevel(jsonString, download);
                     break;
@@ -389,14 +418,10 @@ namespace BeatSage_Downloader
                     attempts += 1;
 
                     Thread.Sleep(500);
+                    Console.WriteLine("Failed to Create Custom Level!");
+                    download.Status = "Failed: Unable To Create Level";
+                    System.Threading.Thread.Sleep(500);
                 }
-            }
-
-            if (attempts >= 2)
-            {
-                Console.WriteLine("Failed to Create Custom Level!");
-
-                download.Status = "Failed";
             }
         }
 
@@ -445,7 +470,12 @@ namespace BeatSage_Downloader
             var content = new MultipartFormDataContent(boundary);
             content.Headers.Remove("Content-Type");
             content.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary);
-            content.Add(new StringContent("null"), "audio_file");
+
+            //byte[] bytes = System.IO.File.ReadAllBytes("cover.jpg");
+            //content.Add(new ByteArrayContent(bytes), "cover_art", "cover.jpg");
+
+            //content.Add(new ByteArrayContent((byte[])responseData["beatsage_thumbnail"]), "cover_art", "cover.jpg");
+
             content.Add(new StringContent((string)responseData["webpage_url"]), "youtube_url");
             content.Add(new StringContent(trackName), "audio_metadata_title");
             content.Add(new StringContent(artistName), "audio_metadata_artist");
