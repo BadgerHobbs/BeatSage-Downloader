@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -314,15 +315,22 @@ namespace BeatSage_Downloader
                     selectedEnvironment = songEvents[randomItemIndex];
                     Console.WriteLine("Random Per Song Environment: " + selectedEnvironment);
                 }
-
-                if ((linksTextBox.GetLineText(i).Contains("https://www.youtube.com/watch?v=")) || (linksTextBox.GetLineText(i).Contains("https://youtu.be/")))
+                var isUri = Uri.TryCreate(linksTextBox.GetLineText(i), UriKind.RelativeOrAbsolute, out var uri);
+                if (isUri && new string[] { "youtu.be" , "youtube.com", "www.youtube.com" }.Contains(uri.Host)) // (linksTextBox.GetLineText(i).Contains("https://www.youtube.com/watch?v=")) || (linksTextBox.GetLineText(i).Contains("https://youtu.be/"))
                 {
-                    string youtubeID = linksTextBox.GetLineText(i).Replace("https://youtu.be/", "").Replace("https://www.youtube.com/watch?v=", "").TrimEnd('\r', '\n');
+                    var query = uri.ParseQueryString();
+                    if (!query.ContainsKey("v"))
+                    {
+                        RaiseAnError($"{uri} is not a valid youtube video URL");
+                        return;
+                    }
+                    var youtubeID = query.Get("v");
+                    /*string youtubeID = linksTextBox.GetLineText(i).Replace("https://youtu.be/", "").Replace("https://www.youtube.com/watch?v=", "").TrimEnd('\r', '\n');
 
                     if (youtubeID.Contains("&"))
                     {
                         youtubeID = youtubeID.Substring(0,youtubeID.IndexOf("&"));
-                    }
+                    }*/
 
                     Console.WriteLine("Youtube ID: " + youtubeID);
 

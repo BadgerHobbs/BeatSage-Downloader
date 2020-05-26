@@ -27,6 +27,7 @@ namespace BeatSage_Downloader
             OutputDirectoryTextBox.Text = Properties.Settings.Default.outputDirectory;
 
             AutomaticExtractionCheckBox.IsChecked = Properties.Settings.Default.automaticExtraction;
+            YoutubeDLCheckBox.IsChecked = Properties.Settings.Default.preferYoutubeDL;
 
         }
 
@@ -51,6 +52,7 @@ namespace BeatSage_Downloader
         {
             
             Properties.Settings.Default.automaticExtraction = Properties.Settings.Default.automaticExtraction = (bool)AutomaticExtractionCheckBox.IsChecked;
+            Properties.Settings.Default.preferYoutubeDL = Properties.Settings.Default.preferYoutubeDL = (bool)YoutubeDLCheckBox.IsChecked;
             Properties.Settings.Default.outputDirectory = OutputDirectoryTextBox.Text;
             
             Properties.Settings.Default.Save();

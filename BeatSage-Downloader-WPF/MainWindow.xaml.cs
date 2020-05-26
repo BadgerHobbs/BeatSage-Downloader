@@ -285,11 +285,11 @@ namespace BeatSage_Downloader
 
             httpClient.DefaultRequestHeaders.Add("Host", "beatsage.com");
             httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "BeatSage-Downloader/1.1.2");
+            httpClient.DefaultRequestHeaders.Add("User-Agent", $"BeatSage-Downloader/{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
 
             Thread worker = new Thread(RunDownloads);
             worker.IsBackground = true;
-            worker.SetApartmentState(System.Threading.ApartmentState.STA);
+            worker.SetApartmentState(ApartmentState.STA);
             worker.Start();
 
             //RunDownloads();
@@ -312,8 +312,17 @@ namespace BeatSage_Downloader
                     {
                         if ((downloads[i].YoutubeID != "") && (downloads[i].YoutubeID != null))
                         {
-                            string itemUrl = "https://www.youtube.com/watch?v=" + downloads[i].YoutubeID;
-                            await RetrieveMetaData(itemUrl, downloads[i]);
+                            string itemUrl = $"https://www.youtube.com/watch?v={downloads[i].YoutubeID}";
+                            try { await RetrieveMetaData(itemUrl, downloads[i]); }
+                            catch (HttpRequestException ex)
+                            {
+                                downloads[i].Status = "Failed";
+                                if (ex.InnerException.InnerException.Message.Contains("forbidden by its access permissions")) // An attempt was made to access a socket in a way forbidden by its access permissions
+                                {
+                                    downloads[i].Status += " (Firewall)";
+                                    break;
+                                }
+                            }
                         }
                         else if ((downloads[i].FilePath != "") && (downloads[i].FilePath != null))
                         {
@@ -323,8 +332,8 @@ namespace BeatSage_Downloader
 
                     previousNumberOfDownloads = downloads.Count;
                 }
-                
-                System.Threading.Thread.Sleep(1000);
+
+                Thread.Sleep(1000);
             }
 
             
@@ -379,7 +388,7 @@ namespace BeatSage_Downloader
                 {
                     attempts += 1;
 
-                    System.Threading.Thread.Sleep(500);
+                    Thread.Sleep(500);
                 }
             }
 
@@ -569,54 +578,45 @@ namespace BeatSage_Downloader
 
         static void RetrieveDownload(string levelId, string trackName, string artistName, Download download)
         {
-            download.Status = "Downloading";
-
-            string url = "https://beatsage.com/beatsaber_custom_level_download/" + levelId;
-
-            Console.WriteLine(url);
-
-            string fileName = "[BSD] " + trackName + " - " + artistName;
-
-            WebClient client = new WebClient();
-            Uri uri = new Uri(url);
-
             if (Properties.Settings.Default.outputDirectory == "")
             {
                 Properties.Settings.Default.outputDirectory = @"Downloads";
                 Properties.Settings.Default.Save();
             }
+            string fileName = "[BSD] " + trackName + " - " + artistName;
+            var outputDir = new DirectoryInfo(Properties.Settings.Default.outputDirectory).Combine(fileName);
+            var outputZIP = outputDir.Parent.CombineFile(fileName + ".zip");
+
+
+            download.Status = "Downloading";
+
+
+            WebClient client = new WebClient();
+            Uri uri = new Uri("https://beatsage.com/beatsaber_custom_level_download/" + levelId);
+            Console.WriteLine(uri.OriginalString);
+
 
             if (Properties.Settings.Default.automaticExtraction)
             {
+                if (Properties.Settings.Default.skipExisting && outputDir.Exists) { download.Status = "Already exists"; return; }
+
                 client.DownloadFile(uri, fileName + ".zip");
 
                 download.Status = "Extracting";
 
-                if (Directory.Exists(fileName))
-                {
-                    Directory.Delete(fileName);
-                }
-                
-                if (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))
-                {
-                    Directory.Delete(Properties.Settings.Default.outputDirectory + @"\" + fileName, true);
-                }
+                if (outputDir.Exists) outputDir.Delete(true);
 
-                ZipFile.ExtractToDirectory(fileName + ".zip", Properties.Settings.Default.outputDirectory + @"\" + fileName);
+                ZipFile.ExtractToDirectory(fileName + ".zip", outputDir.FullName);
 
-                if (File.Exists(fileName + ".zip"))
-                {
-                    File.Delete(fileName + ".zip");
-                }
+                if (outputZIP.Exists) outputZIP.Delete();
             }
             else
             {
-                if (File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip"))
-                {
-                    File.Delete(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip");
-                }
+                if (Properties.Settings.Default.skipExisting && outputZIP.Exists) { download.Status = "Already exists"; return; }
 
-                client.DownloadFile(uri, Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip");
+                if (outputZIP.Exists) outputZIP.Delete();
+
+                client.DownloadFile(uri, outputZIP.FullName);
             }
 
 

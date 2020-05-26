@@ -85,6 +85,13 @@
             Margin="10,41,0,0" 
             VerticalAlignment="Top"
             />
+        <CheckBox 
+            Content="Fallback to Youtube-DL" 
+            x:Name="YoutubeDLCheckBox"
+            HorizontalAlignment="Left" 
+            Margin="199.5,41,0,0" 
+            VerticalAlignment="Top"
+            />
 
     </Grid>
 </Controls:MetroWindow>
