@@ -27,7 +27,7 @@ namespace BeatSage_Downloader
             OutputDirectoryTextBox.Text = Properties.Settings.Default.outputDirectory;
 
             AutomaticExtractionCheckBox.IsChecked = Properties.Settings.Default.automaticExtraction;
-
+            OverwriteExistingCheckBox.IsChecked = Properties.Settings.Default.overwriteExisting;
         }
 
         public void SelectOutputDirectory(object sender, RoutedEventArgs e)
@@ -50,9 +50,10 @@ namespace BeatSage_Downloader
         public void SaveButton(object sender, RoutedEventArgs e)
         {
             
-            Properties.Settings.Default.automaticExtraction = Properties.Settings.Default.automaticExtraction = (bool)AutomaticExtractionCheckBox.IsChecked;
+            Properties.Settings.Default.automaticExtraction = (bool)AutomaticExtractionCheckBox.IsChecked;
+            Properties.Settings.Default.overwriteExisting = (bool)OverwriteExistingCheckBox.IsChecked;
             Properties.Settings.Default.outputDirectory = OutputDirectoryTextBox.Text;
-            
+
             Properties.Settings.Default.Save();
             this.Close();
         }

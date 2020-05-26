@@ -438,8 +438,7 @@ namespace BeatSage_Downloader
             {
                 artistName = (string)responseData["uploader"];
             }
-
-
+            
             var invalids = System.IO.Path.GetInvalidFileNameChars();
 
             trackName = String.Join("_", trackName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
@@ -450,6 +449,17 @@ namespace BeatSage_Downloader
 
             download.Title = trackName;
             download.Artist = artistName;
+
+            string fileName = "[BSD] " + trackName + " - " + artistName;
+
+            if (!Properties.Settings.Default.overwriteExisting)
+            {
+                if ((File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip")) || (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName)))
+                {
+                    download.Status = "Already Exists";
+                    return;
+                }
+            }
 
             Console.WriteLine("download.Title: " + download.Title);
             Console.WriteLine("download.Artist : " + download.Artist);
@@ -494,20 +504,20 @@ namespace BeatSage_Downloader
 
             TagLib.File tagFile = TagLib.File.Create(download.FilePath);
 
-            string artist = "";
-            string title = "";
+            string artistName = "";
+            string trackName = "";
             byte[] imageData = { };
 
             var invalids = System.IO.Path.GetInvalidFileNameChars();
 
             if (tagFile.Tag.FirstPerformer != null)
             {
-                artist = String.Join("_", tagFile.Tag.FirstPerformer.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+                artistName = String.Join("_", tagFile.Tag.FirstPerformer.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
             }
 
             if (tagFile.Tag.Title != null)
             {
-                title = String.Join("_", tagFile.Tag.Title.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+                trackName = String.Join("_", tagFile.Tag.Title.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
             }
 
             if (tagFile.Tag.Pictures[0].Data.Data != null)
@@ -515,8 +525,19 @@ namespace BeatSage_Downloader
                 imageData = tagFile.Tag.Pictures[0].Data.Data;
             }
 
-            download.Artist = artist;
-            download.Title = title;
+            download.Artist = artistName;
+            download.Title = trackName;
+
+            string fileName = "[BSD] " + trackName + " - " + artistName;
+
+            if (!Properties.Settings.Default.overwriteExisting)
+            {
+                if ((File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip")) || (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName)))
+                {
+                    download.Status = "Already Exists";
+                    return;
+                }
+            }
 
             byte[] bytes = System.IO.File.ReadAllBytes(download.FilePath);
 
@@ -534,8 +555,8 @@ namespace BeatSage_Downloader
                 content.Add(imageContent);
             }
             
-            content.Add(new StringContent(title), "audio_metadata_title");
-            content.Add(new StringContent(artist), "audio_metadata_artist");
+            content.Add(new StringContent(trackName), "audio_metadata_title");
+            content.Add(new StringContent(artistName), "audio_metadata_artist");
             content.Add(new StringContent(download.Difficulties), "difficulties");
             content.Add(new StringContent(download.GameModes), "modes");
             content.Add(new StringContent(download.SongEvents), "events");
@@ -554,7 +575,7 @@ namespace BeatSage_Downloader
 
             Console.WriteLine(levelID);
 
-            await CheckDownload(levelID, title, artist, download);
+            await CheckDownload(levelID, trackName, artistName, download);
         }
 
         static async Task CheckDownload(string levelId, string trackName, string artistName, Download download)

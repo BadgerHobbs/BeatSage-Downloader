@@ -77,13 +77,23 @@
             Text="If blank downloads are saved in 'Downloads' in the program directory" 
             VerticalAlignment="Top"
             />
-        
+
         <CheckBox 
             Content="Enable Automatic Extraction" 
             x:Name="AutomaticExtractionCheckBox"
             HorizontalAlignment="Left" 
-            Margin="10,41,0,0" 
+            Margin="25,45,0,0" 
             VerticalAlignment="Top"
+            Width="175"
+            />
+
+        <CheckBox 
+            Content="Overwrite Existing" 
+            x:Name="OverwriteExistingCheckBox"
+            HorizontalAlignment="Left" 
+            Margin="220,45,0,0" 
+            VerticalAlignment="Top"
+            Width="150"
             />
 
     </Grid>

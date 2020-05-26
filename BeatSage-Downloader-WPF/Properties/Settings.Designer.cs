@@ -106,5 +106,17 @@ namespace BeatSage_Downloader.Properties {
                 this["automaticExtraction"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool overwriteExisting {
+            get {
+                return ((bool)(this["overwriteExisting"]));
+            }
+            set {
+                this["overwriteExisting"] = value;
+            }
+        }
     }
 }
