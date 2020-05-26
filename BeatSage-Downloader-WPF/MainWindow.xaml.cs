@@ -456,15 +456,15 @@ namespace BeatSage_Downloader
 
             string boundary = "----WebKitFormBoundaryaA38RFcmCeKFPOms";
             var content = new MultipartFormDataContent(boundary);
-            content.Headers.Remove("Content-Type");
-            content.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary);
-
-            //byte[] bytes = System.IO.File.ReadAllBytes("cover.jpg");
-            //content.Add(new ByteArrayContent(bytes), "cover_art", "cover.jpg");
-
-            //content.Add(new ByteArrayContent((byte[])responseData["beatsage_thumbnail"]), "cover_art", "cover.jpg");
 
             content.Add(new StringContent((string)responseData["webpage_url"]), "youtube_url");
+
+            var imageContent = new ByteArrayContent((byte[])responseData["beatsage_thumbnail"]);
+            imageContent.Headers.Remove("Content-Type");
+            imageContent.Headers.Add("Content-Disposition", "form-data; name=\"cover_art\"; filename=\"cover\"");
+            imageContent.Headers.Add("Content-Type", "image/jpeg");
+            content.Add(imageContent);
+
             content.Add(new StringContent(trackName), "audio_metadata_title");
             content.Add(new StringContent(artistName), "audio_metadata_artist");
             content.Add(new StringContent(download.Difficulties), "difficulties");
@@ -496,6 +496,7 @@ namespace BeatSage_Downloader
 
             string artist = "";
             string title = "";
+            byte[] imageData = { };
 
             var invalids = System.IO.Path.GetInvalidFileNameChars();
 
@@ -508,26 +509,31 @@ namespace BeatSage_Downloader
             {
                 title = String.Join("_", tagFile.Tag.Title.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
             }
-            
+
+            if (tagFile.Tag.Pictures[0].Data.Data != null)
+            {
+                imageData = tagFile.Tag.Pictures[0].Data.Data;
+            }
 
             download.Artist = artist;
             download.Title = title;
 
             byte[] bytes = System.IO.File.ReadAllBytes(download.FilePath);
 
-            //HttpContent fileStreamContent = new StreamContent(fileStream);
-
-            //var stream = File.OpenRead("Keane - Somewhere Only We Know.mp3");
-            //var streamContent = new StreamContent(stream);
-
-            //HttpContent bytesContent = new ByteArrayContent(bytes);
-
             string boundary = "----WebKitFormBoundaryaA38RFcmCeKFPOms";
-            var content = new MultipartFormDataContent(boundary);
-            content.Headers.Remove("Content-Type");
-            content.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary);
-            //content.Add(streamContent, "audio_file");
+            var content = new MultipartFormDataContent(boundary);            
+
             content.Add(new ByteArrayContent(bytes), "audio_file", download.FileName);
+
+            if (imageData != null)
+            {
+                var imageContent = new ByteArrayContent(imageData);
+                imageContent.Headers.Remove("Content-Type");
+                imageContent.Headers.Add("Content-Disposition", "form-data; name=\"cover_art\"; filename=\"cover\"");
+                imageContent.Headers.Add("Content-Type", "image/jpeg");
+                content.Add(imageContent);
+            }
+            
             content.Add(new StringContent(title), "audio_metadata_title");
             content.Add(new StringContent(artist), "audio_metadata_artist");
             content.Add(new StringContent(download.Difficulties), "difficulties");
