@@ -143,7 +143,7 @@ namespace BeatSage_Downloader
             bool difficultySelected = false;
             bool gameModeSelected = false;
 
-            if ((DifficultyNormalCheckBox.IsChecked == true) || (DifficultyHardCheckBox.IsChecked == true) || (DifficultyExpertPlusCheckBox.IsChecked == true) || (DifficultyExpertPlusCheckBox.IsChecked == true))
+            if ((DifficultyNormalCheckBox.IsChecked == true) || (DifficultyHardCheckBox.IsChecked == true) || (DifficultyExpertCheckBox.IsChecked == true) || (DifficultyExpertPlusCheckBox.IsChecked == true))
             {
                 difficultySelected = true;
             }
@@ -260,24 +260,22 @@ namespace BeatSage_Downloader
             if ((selectedSongEvents != "") && (selectedSongEvents[selectedSongEvents.Count() - 1] == ','))
             {
                 selectedSongEvents = selectedSongEvents.Remove(selectedSongEvents.Count() - 1);
-
-                Properties.Settings.Default.previousGameEvents = selectedSongEvents;
-                Properties.Settings.Default.Save();
             }
 
-            List<string> songEvents = new List<string>();
+            List<string> songEnvironments = new List<string>();
 
             foreach (ComboBoxItem comboBoxItem in EnvironmentComboBox.Items)
             {
                 if (!comboBoxItem.Tag.ToString().Contains("Random"))
                 {
-                    songEvents.Add(comboBoxItem.Tag.ToString());
-                    songEvents.Add(comboBoxItem.Tag.ToString());
+                    songEnvironments.Add(comboBoxItem.Tag.ToString());
+                    songEnvironments.Add(comboBoxItem.Tag.ToString());
                 }
             }
 
             Properties.Settings.Default.previousEnvironment = EnvironmentComboBox.Text;
             Properties.Settings.Default.previousModelVersion = ModelVersionComboBox.Text;
+            Properties.Settings.Default.previousGameEvents = selectedSongEvents;
             Properties.Settings.Default.Save();
 
             selectedEnvironment = GetSelectedEnvironment();
@@ -286,8 +284,8 @@ namespace BeatSage_Downloader
 
             if (selectedEnvironment == "Random")
             {
-                int randomItemIndex = random.Next(songEvents.Count);
-                selectedEnvironment = songEvents[randomItemIndex];
+                int randomItemIndex = random.Next(songEnvironments.Count);
+                selectedEnvironment = songEnvironments[randomItemIndex];
                 Console.WriteLine("Random Environment: " + selectedEnvironment);
             }
 
@@ -310,8 +308,8 @@ namespace BeatSage_Downloader
 
                 if (GetSelectedEnvironment() == "RandomPerSong")
                 {
-                    int randomItemIndex = random.Next(songEvents.Count);
-                    selectedEnvironment = songEvents[randomItemIndex];
+                    int randomItemIndex = random.Next(songEnvironments.Count);
+                    selectedEnvironment = songEnvironments[randomItemIndex];
                     Console.WriteLine("Random Per Song Environment: " + selectedEnvironment);
                 }
 
