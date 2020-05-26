@@ -454,7 +454,7 @@ namespace BeatSage_Downloader
 
             if (!Properties.Settings.Default.overwriteExisting)
             {
-                if ((File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip")) || (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName)))
+                if (((!Properties.Settings.Default.automaticExtraction) && (File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip"))) || ((Properties.Settings.Default.automaticExtraction) && (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))))
                 {
                     download.Status = "Already Exists";
                     return;
@@ -532,7 +532,7 @@ namespace BeatSage_Downloader
 
             if (!Properties.Settings.Default.overwriteExisting)
             {
-                if ((File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip")) || (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName)))
+                if (((!Properties.Settings.Default.automaticExtraction) && (File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip"))) || ((Properties.Settings.Default.automaticExtraction) && (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))))
                 {
                     download.Status = "Already Exists";
                     return;
