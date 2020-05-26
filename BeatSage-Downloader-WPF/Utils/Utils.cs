@@ -159,7 +159,7 @@ namespace BeatSage_Downloader
             }
         }
 
-        public static DirectoryInfo pickFolder(string title = null, string initialDirectory = null)
+        /*public static DirectoryInfo pickFolder(string title = null, string initialDirectory = null)
         {
             Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog dialog = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog();
             if (title != null) dialog.Title = title;
@@ -171,7 +171,7 @@ namespace BeatSage_Downloader
                 if (dir.Exists) return dir;
             }
             return null;
-        }
+        }*/
 
         public static Process StartProcess(FileInfo file, params string[] args) => StartProcess(file.FullName, file.DirectoryName, args);
 
@@ -180,11 +180,11 @@ namespace BeatSage_Downloader
             ProcessStartInfo proc = new ProcessStartInfo();
             proc.FileName = file;
             proc.Arguments = string.Join(" ", args);
-            Logger.Debug("Starting Process: {0} {1}", proc.FileName, proc.Arguments);
+            Console.WriteLine("Starting Process: {0} {1}", proc.FileName, proc.Arguments);
             if (workDir != null)
             {
                 proc.WorkingDirectory = workDir;
-                Logger.Debug("Working Directory: {0}", proc.WorkingDirectory);
+                Console.WriteLine("Working Directory: {0}", proc.WorkingDirectory);
             }
             return Process.Start(proc);
         }

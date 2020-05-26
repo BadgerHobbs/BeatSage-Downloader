@@ -6,13 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using MahApps.Metro.Controls;
 using Newtonsoft.Json.Linq;
 using System.Net;
@@ -41,10 +35,7 @@ namespace BeatSage_Downloader
 
             dataGrid.ItemsSource = DownloadManager.Downloads;
 
-            if (Directory.Exists("Downloads") == false)
-            {
-                Directory.CreateDirectory("Downloads");
-            }
+            if (!Directory.Exists("Downloads")) Directory.CreateDirectory("Downloads");
         }
 
         public void OpenAddDownloadWindow(object sender, RoutedEventArgs e)
@@ -315,7 +306,7 @@ namespace BeatSage_Downloader
                 {
                     for (int i = previousNumberOfDownloads; i < downloads.Count; i++)
                     {
-                        if ((downloads[i].YoutubeID != "") && (downloads[i].YoutubeID != null))
+                        if (!downloads[i].YoutubeID.IsNullOrWhiteSpace())
                         {
                             string itemUrl = $"https://www.youtube.com/watch?v={downloads[i].YoutubeID}";
                             try { await RetrieveMetaData(itemUrl, downloads[i]); }
@@ -328,7 +319,6 @@ namespace BeatSage_Downloader
                                     break;
                                 }
                             }
-                            string itemUrl = "https://www.youtube.com/watch?v=" + downloads[i].YoutubeID;
 
                             try
                             {
@@ -452,7 +442,7 @@ namespace BeatSage_Downloader
             }
 
 
-            var invalids = System.IO.Path.GetInvalidFileNameChars();
+            var invalids = Path.GetInvalidFileNameChars();
 
             trackName = String.Join("_", trackName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
             artistName = String.Join("_", artistName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
@@ -509,7 +499,7 @@ namespace BeatSage_Downloader
             string artist = "";
             string title = "";
 
-            var invalids = System.IO.Path.GetInvalidFileNameChars();
+            var invalids = Path.GetInvalidFileNameChars();
 
             if (tagFile.Tag.FirstPerformer != null)
             {
