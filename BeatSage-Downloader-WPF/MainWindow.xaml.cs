@@ -317,17 +317,7 @@ namespace BeatSage_Downloader
                                 {
                                     downloads[i].Status += " (Firewall)";
                                     break;
-                                }
-                            }
-
-                            try
-                            {
-                                await RetrieveMetaData(itemUrl, downloads[i]);
-                            }
-                            catch
-                            {
-                                downloads[i].Status = "Failed: Unable To Retrieve Metadata";
-                                return;
+                                } else downloads[i].Status += " (Metadata)";
                             }
 
                         }
@@ -406,11 +396,9 @@ namespace BeatSage_Downloader
                 catch
                 {
                     attempts += 1;
-
-                    Thread.Sleep(500);
                     Console.WriteLine("Failed to Create Custom Level!");
                     download.Status = "Failed: Unable To Create Level";
-                    System.Threading.Thread.Sleep(500);
+                    Thread.Sleep(500);
                 }
             }
         }
@@ -442,10 +430,8 @@ namespace BeatSage_Downloader
             }
 
 
-            var invalids = Path.GetInvalidFileNameChars();
-
-            trackName = String.Join("_", trackName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
-            artistName = String.Join("_", artistName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+            trackName = trackName.ReplaceInvalidFileNameChars().TrimEnd('.');
+            artistName = artistName.ReplaceInvalidFileNameChars().TrimEnd('.');
 
             Console.WriteLine("trackName: " + trackName);
             Console.WriteLine("artistName: " + artistName);
