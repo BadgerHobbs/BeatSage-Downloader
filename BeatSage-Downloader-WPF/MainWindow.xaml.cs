@@ -70,6 +70,97 @@ namespace BeatSage_Downloader
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
         }
+        public void MoveSelectedDownloadUp(object sender, RoutedEventArgs e)
+        {
+            List<Download> selectedDownloads = new List<Download>();
+
+            foreach (Download download in dataGrid.SelectedItems)
+            {
+                selectedDownloads.Add(download);
+            }
+
+            selectedDownloads = selectedDownloads.OrderBy(o => DownloadManager.downloads.IndexOf(o)).ToList();
+
+            foreach (Download download in selectedDownloads)
+            {
+                int selectedIndex = DownloadManager.downloads.IndexOf(download);
+
+                if (selectedIndex - 1 >= 0)
+                {
+                    Download selectedDownloadItem = download;
+                    Download downloadItemAbove = (Download)dataGrid.Items[selectedIndex - 1];
+                    DownloadManager.downloads.Remove(selectedDownloadItem);
+                    DownloadManager.downloads.Insert(selectedIndex - 1, selectedDownloadItem);
+                    dataGrid.SelectedIndex = selectedIndex - 1;
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            foreach (Download download in selectedDownloads)
+            {
+                dataGrid.SelectedItems.Add((Download)dataGrid.Items[DownloadManager.downloads.IndexOf(download)]);
+            }
+
+        }
+        public void MoveSelectedDownloadDown(object sender, RoutedEventArgs e)
+        {
+            List<Download> selectedDownloads = new List<Download>();
+
+            foreach (Download download in dataGrid.SelectedItems)
+            {
+                selectedDownloads.Add(download);
+            }
+
+            selectedDownloads = selectedDownloads.OrderBy(o => DownloadManager.downloads.IndexOf(o)).Reverse().ToList();
+
+            foreach (Download download in selectedDownloads)
+            {
+                int selectedIndex = DownloadManager.downloads.IndexOf(download);
+
+                if (selectedIndex + 1 < dataGrid.Items.Count)
+                {
+                    Download selectedDownloadItem = download;
+                    Download downloadItemBelow = (Download)dataGrid.Items[selectedIndex + 1];
+                    DownloadManager.downloads.Remove(selectedDownloadItem);
+                    DownloadManager.downloads.Insert(selectedIndex + 1, selectedDownloadItem);
+                    dataGrid.SelectedIndex = selectedIndex + 1;
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            foreach (Download download in selectedDownloads)
+            {
+                dataGrid.SelectedItems.Add((Download)dataGrid.Items[DownloadManager.downloads.IndexOf(download)]);
+            }
+        }
+
+        public void RemoveSelectedDownload(object sender, RoutedEventArgs e)
+        {
+            List<Download> selectedDownloads = new List<Download>();
+
+            foreach (Download download in dataGrid.SelectedItems)
+            {
+                if (download.IsAlive == true)
+                {
+                    DownloadManager.cts.Cancel();
+                    DownloadManager.cts.Dispose();
+                }
+
+                selectedDownloads.Add(download);
+            }
+
+            foreach (Download download in selectedDownloads)
+            {
+                DownloadManager.downloads.Remove(download);
+            }
+
+        }
     }
 
     public class Download : INotifyPropertyChanged
@@ -87,6 +178,7 @@ namespace BeatSage_Downloader
         private string identifier;
         private string environment;
         private string modelVersion;
+        private bool isAlive;
 
         public int Number
         {
@@ -264,6 +356,19 @@ namespace BeatSage_Downloader
             }
         }
 
+        public bool IsAlive
+        {
+            get
+            {
+                return isAlive;
+            }
+            set
+            {
+                isAlive = value;
+                RaiseProperChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaiseProperChanged([CallerMemberName] string caller = "")
@@ -280,9 +385,11 @@ namespace BeatSage_Downloader
     {
         public static ObservableCollection<Download> downloads = new ObservableCollection<Download>();
 
-        private static readonly HttpClient httpClient = new HttpClient();
+        public static readonly HttpClient httpClient = new HttpClient();
 
         private static DataGrid dataGrid;
+
+        public static CancellationTokenSource cts;
 
         public DownloadManager(DataGrid newDataGrid)
         {
@@ -309,36 +416,53 @@ namespace BeatSage_Downloader
 
             while (true)
             {
+                cts = new CancellationTokenSource();
+
+                List<Download> incompleteDownloads = new List<Download>();
+
+                foreach (Download download in downloads)
+                {
+                    if (download.Status == "Queued")
+                    {
+                        incompleteDownloads.Add(download);
+                    }
+                }
+
                 Console.WriteLine("Checking for Downloads...");
 
-                if (previousNumberOfDownloads != downloads.Count)
+                if (incompleteDownloads.Count >= 1)
                 {
-                    for (int i = previousNumberOfDownloads; i < downloads.Count; i++)
+                    Download currentDownload = incompleteDownloads[0];
+                    currentDownload.IsAlive = true;
+
+                    if ((currentDownload.YoutubeID != "") && (currentDownload.YoutubeID != null))
                     {
-                        if ((downloads[i].YoutubeID != "") && (downloads[i].YoutubeID != null))
-                        {
-                            string itemUrl = "https://www.youtube.com/watch?v=" + downloads[i].YoutubeID;
+                        string itemUrl = "https://www.youtube.com/watch?v=" + currentDownload.YoutubeID;
 
-                            try
-                            {
-                                await RetrieveMetaData(itemUrl, downloads[i]);
-                            }
-                            catch
-                            {
-                                downloads[i].Status = "Failed: Unable To Retrieve Metadata";
-                                return;
-                            }
-
-                        }
-                        else if ((downloads[i].FilePath != "") && (downloads[i].FilePath != null))
+                        try
                         {
-                            await CreateCustomLevelFromFile(downloads[i]);
+                            await RetrieveMetaData(itemUrl, currentDownload);
                         }
+                        catch
+                        {
+                            currentDownload.Status = "Unable To Retrieve Metadata";
+                            currentDownload.IsAlive = false;
+                            cts.Dispose();
+                            return;
+                        }
+
+                    }
+                    else if ((currentDownload.FilePath != "") && (currentDownload.FilePath != null))
+                    {
+                        await CreateCustomLevelFromFile(currentDownload);
+                        currentDownload.IsAlive = false;
+                        cts.Dispose();
+                        return;
                     }
 
-                    previousNumberOfDownloads = downloads.Count;
                 }
-                
+
+                cts.Dispose();
                 System.Threading.Thread.Sleep(1000);
             }
 
@@ -382,7 +506,7 @@ namespace BeatSage_Downloader
 
             if (!response.IsSuccessStatusCode)
             {
-                download.Status = "Failed: Unable To Retrieve Metadata";
+                download.Status = "Unable To Retrieve Metadata";
                 return;
             }
 
@@ -395,7 +519,7 @@ namespace BeatSage_Downloader
                     if ((int)jsonString["duration"] / 60 > 10)
                     {
                         Console.WriteLine("Failed, download greater than 10 mins!");
-                        download.Status = "Failed: Song >10 Minutes";
+                        download.Status = "Song >10 Minutes";
                         return;
                     }
 
@@ -407,7 +531,7 @@ namespace BeatSage_Downloader
                     attempts += 1;
 
                     Console.WriteLine("Failed to Create Custom Level!");
-                    download.Status = "Failed: Unable To Create Level";
+                    download.Status = "Unable To Create Level";
                     System.Threading.Thread.Sleep(500);
                 }
             }
@@ -483,7 +607,7 @@ namespace BeatSage_Downloader
             content.Add(new StringContent(download.Environment), "environment");
             content.Add(new StringContent(download.ModelVersion), "system_tag");
 
-            var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content);
+            var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content, cts.Token);
 
             var responseString = await response.Content.ReadAsStringAsync();
 
@@ -563,7 +687,7 @@ namespace BeatSage_Downloader
             content.Add(new StringContent(download.Environment), "environment");
             content.Add(new StringContent(download.ModelVersion), "system_tag");
 
-            var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content);
+            var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content, cts.Token);
 
             var responseString = await response.Content.ReadAsStringAsync();
 
@@ -593,13 +717,17 @@ namespace BeatSage_Downloader
             {
                 try
                 {
+                    if (cts.Token.IsCancellationRequested)
+                    {
+                        return;
+                    }
 
                     Console.WriteLine(levelStatus);
 
                     System.Threading.Thread.Sleep(1000);
 
                     //POST the object to the specified URI 
-                    var response = await httpClient.GetAsync(url);
+                    var response = await httpClient.GetAsync(url, cts.Token);
 
                     //Read back the answer from server
                     var responseString = await response.Content.ReadAsStringAsync();

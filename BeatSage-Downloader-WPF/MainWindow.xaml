@@ -46,7 +46,8 @@
             Fill="#FF444444"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
-            ></Rectangle>
+            >
+        </Rectangle>
 
         <Button 
             Visibility="Hidden"
@@ -71,11 +72,22 @@
             </Button.ContentTemplate>
         </Button>
 
+        <Rectangle 
+            Height="14"
+            Width="1"
+            Margin="70,8,0,0"
+            Fill="#FF444444"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            >
+        </Rectangle>
+
         <Button 
-            Visibility="Hidden"
+            Click="RemoveSelectedDownload"
+            Visibility="Visible"
             Height="25"
             Width="25"
-            Margin="65,2.5,0,0"
+            Margin="75,2.5,0,0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             Background="Transparent"
@@ -86,7 +98,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <iconPacks:PackIconMaterial 
-                            Kind="Pause"        
+                            Kind="DeleteForever"        
                             Width="15"
                             Height="Auto"/>
                     </StackPanel>
@@ -95,20 +107,21 @@
         </Button>
 
         <Rectangle 
-            Visibility="Hidden"
+            Visibility="Visible"
             Height="14"
             Width="1"
-            Margin="95,8,0,0"
+            Margin="105,8,0,0"
             Fill="#FF444444"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             ></Rectangle>
 
         <Button 
-            Visibility="Hidden"
+            Click="MoveSelectedDownloadUp"
+            Visibility="Visible"
             Height="25"
             Width="25"
-            Margin="100,2.5,0,0"
+            Margin="115,2.5,0,0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             Background="Transparent"
@@ -128,10 +141,11 @@
         </Button>
 
         <Button
-            Visibility="Hidden" 
+            Click="MoveSelectedDownloadDown"
+            Visibility="Visible" 
             Height="25"
             Width="25"
-            Margin="125,2.5,0,0"
+            Margin="140,2.5,0,0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             Background="Transparent"
@@ -158,7 +172,8 @@
             Fill="#FF444444"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
-            ></Rectangle>
+            >
+        </Rectangle>
 
         <Button 
             Click="OpenSettingsWindow"
@@ -198,7 +213,7 @@
                 <DataGridTextColumn Header = "YouTube ID/File Name" Binding = "{Binding Identifier}" Width="1.5*"/>
                 <DataGridTextColumn Header = "Title" Binding = "{Binding Title}" Width="2*"/>
                 <DataGridTextColumn Header = "Artist" Binding = "{Binding Artist}" Width="1.5*"/>
-                <DataGridTextColumn Header = "Status" Binding = "{Binding Status}" Width="200"/>
+                <DataGridTextColumn Header = "Status" Binding = "{Binding Status}" Width="180"/>
 
             </DataGrid.Columns>
 

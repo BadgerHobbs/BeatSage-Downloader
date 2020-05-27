@@ -337,7 +337,8 @@ namespace BeatSage_Downloader
                         FilePath = "",
                         FileName = "",
                         Environment = selectedEnvironment,
-                        ModelVersion = selectedModelVersion
+                        ModelVersion = selectedModelVersion,
+                        IsAlive = false
                     });
                 }
                 else if (linksTextBox.GetLineText(i).Contains(".mp3"))
@@ -359,7 +360,8 @@ namespace BeatSage_Downloader
                         FilePath = filePath,
                         FileName = System.IO.Path.GetFileName(filePath),
                         Environment = selectedEnvironment,
-                        ModelVersion = selectedModelVersion
+                        ModelVersion = selectedModelVersion,
+                        IsAlive = false
                     });
                 }
             }
