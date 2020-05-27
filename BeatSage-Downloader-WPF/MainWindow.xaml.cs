@@ -541,7 +541,7 @@ namespace BeatSage_Downloader
         {
             download.Status = "Generating Custom Level";
 
-            string trackName = "null";
+            string trackName = "Unknown";
 
             if (((string)responseData["track"]) != null)
             {
@@ -552,7 +552,7 @@ namespace BeatSage_Downloader
                 trackName = (string)responseData["fulltitle"];
             }
 
-            string artistName = "null";
+            string artistName = "Unknown";
 
             if (((string)responseData["artist"]) != null)
             {
@@ -628,9 +628,9 @@ namespace BeatSage_Downloader
 
             TagLib.File tagFile = TagLib.File.Create(download.FilePath);
 
-            string artistName = "";
-            string trackName = "";
-            byte[] imageData = { };
+            string artistName = "Unknown";
+            string trackName = "Unknown";
+            byte[] imageData = null;
 
             var invalids = System.IO.Path.GetInvalidFileNameChars();
 
@@ -643,11 +643,19 @@ namespace BeatSage_Downloader
             {
                 trackName = String.Join("_", tagFile.Tag.Title.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
             }
-
-            if (tagFile.Tag.Pictures[0].Data.Data != null)
+            else
             {
-                imageData = tagFile.Tag.Pictures[0].Data.Data;
+                trackName = System.IO.Path.GetFileNameWithoutExtension(download.FilePath);
             }
+
+            if (tagFile.Tag.Pictures.Count() > 0)
+            {
+                if (tagFile.Tag.Pictures[0].Data.Data != null)
+                {
+                    imageData = tagFile.Tag.Pictures[0].Data.Data;
+                }
+            }
+
 
             download.Artist = artistName;
             download.Title = trackName;
