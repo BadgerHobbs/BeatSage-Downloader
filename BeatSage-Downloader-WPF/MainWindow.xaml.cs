@@ -35,18 +35,29 @@ namespace BeatSage_Downloader
     {
         public static DownloadManager downloadManager;
 
+        public static Label updateAvailableLabel;
+
         public MainWindow()
         {
             InitializeComponent();
             downloadManager = new DownloadManager(dataGrid);
-            
+
             dataGrid.ItemsSource = DownloadManager.Downloads;
-            
+            updateAvailableLabel = newUpdateAvailableLabel;
+
+            CheckUpdateAvailable();
+
             if (Directory.Exists("Downloads") == false)
             {
                 Directory.CreateDirectory("Downloads");
             }
         }
+
+        public async void CheckUpdateAvailable()
+        {
+            await DownloadManager.CheckUpdateAvailable();
+        }
+
 
         public static void SaveDownloads()
         {
@@ -494,6 +505,8 @@ namespace BeatSage_Downloader
 
         public static CancellationTokenSource cts;
 
+        public static Label newUpdateAvailableLabel;
+
         public DownloadManager(DataGrid newDataGrid)
         {
             dataGrid = newDataGrid;
@@ -518,6 +531,7 @@ namespace BeatSage_Downloader
 
         public async void RunDownloads()
         {
+
             Console.WriteLine("RunDownloads Started");
 
             int previousNumberOfDownloads = downloads.Count;
@@ -578,6 +592,48 @@ namespace BeatSage_Downloader
 
             
         }
+
+        public static async Task CheckUpdateAvailable()
+        {
+            HttpClient httpClient = new HttpClient();
+
+            httpClient.DefaultRequestHeaders.Add("Host", "api.github.com");
+            httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (compatible; Rigor/1.0.0; http://rigor.com)");
+
+            //POST the object to the specified URI 
+            var response = await httpClient.GetAsync("https://api.github.com/repos/BadgerHobbs/BeatSage-Downloader/releases/latest");
+
+            //Read back the answer from server
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            JObject jsonString = JObject.Parse(responseString);
+
+
+            if (response.IsSuccessStatusCode)
+            {
+                string latestVersionString = ((string)jsonString["tag_name"]).Replace("v", "");
+                string currentVersionString = Properties.Settings.Default.currentVersion.Replace("v", "");
+
+                var latestVersion = new Version(latestVersionString);
+                var currentVersion = new Version(currentVersionString);
+
+                var result = latestVersion.CompareTo(currentVersion);
+
+                if (result > 0)
+                {
+                    Console.WriteLine("New Update Available");
+                    MainWindow.updateAvailableLabel.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Console.WriteLine("Running Latest Version");
+                    MainWindow.updateAvailableLabel.Visibility = Visibility.Hidden;
+
+                }
+            }
+        }
+
 
         public static ObservableCollection<Download> Downloads
         {

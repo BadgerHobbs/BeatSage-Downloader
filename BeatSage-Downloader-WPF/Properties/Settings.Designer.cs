@@ -142,5 +142,17 @@ namespace BeatSage_Downloader.Properties {
                 this["saveDownloadsQueue"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("v1.2.1")]
+        public string currentVersion {
+            get {
+                return ((string)(this["currentVersion"]));
+            }
+            set {
+                this["currentVersion"] = value;
+            }
+        }
     }
 }

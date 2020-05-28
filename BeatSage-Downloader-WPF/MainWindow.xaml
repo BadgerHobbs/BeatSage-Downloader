@@ -291,6 +291,25 @@
             </Hyperlink>
         </Label>
 
+        <Label 
+            Visibility="Hidden"
+            Name="newUpdateAvailableLabel"
+            HorizontalAlignment="Right" 
+            Margin="0,0,0,0" 
+            VerticalAlignment="Top" 
+            RenderTransformOrigin="5.292,0.312"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Bottom"
+            Foreground="DarkGray"
+            
+            >
+            <Hyperlink 
+                NavigateUri="https://github.com/BadgerHobbs/BeatSage-Downloader" 
+                RequestNavigate="Hyperlink_RequestNavigate">
+                New Update Available
+            </Hyperlink>
+        </Label>
+
     </Grid>
     
 </Controls:MetroWindow>
