@@ -75,7 +75,7 @@
         <Rectangle 
             Height="14"
             Width="1"
-            Margin="70,8,0,0"
+            Margin="100,8,0,0"
             Fill="#FF444444"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
@@ -110,18 +110,42 @@
             Visibility="Visible"
             Height="14"
             Width="1"
-            Margin="130,8,0,0"
+            Margin="165,8,0,0"
             Fill="#FF444444"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             ></Rectangle>
 
         <Button 
+            Click="RetrySelectedDownload"
+            Visibility="Visible"
+            Height="25"
+            Width="25"
+            Margin="70,2.5,0,0"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Background="Transparent"
+            BorderThickness="0"
+            BorderBrush="Transparent"
+            Focusable="False">
+            <Button.ContentTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial 
+                            Kind="Restart"        
+                            Width="15"
+                            Height="Auto"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Button.ContentTemplate>
+        </Button>
+        
+        <Button 
             Click="MoveSelectedDownloadUp"
             Visibility="Visible"
             Height="25"
             Width="25"
-            Margin="75,2.5,0,0"
+            Margin="105,2.5,0,0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             Background="Transparent"
@@ -145,7 +169,7 @@
             Visibility="Visible" 
             Height="25"
             Width="25"
-            Margin="100,2.5,0,0"
+            Margin="135,2.5,0,0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             Background="Transparent"
@@ -179,7 +203,7 @@
             Click="OpenSettingsWindow"
             Height="25"
             Width="25"
-            Margin="135,2.5,0,0"
+            Margin="170,2.5,0,0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             Background="Transparent"

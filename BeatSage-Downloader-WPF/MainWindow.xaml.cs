@@ -140,6 +140,28 @@ namespace BeatSage_Downloader
             }
         }
 
+        public void RetrySelectedDownload(object sender, RoutedEventArgs e)
+        {
+            List<Download> selectedDownloads = new List<Download>();
+
+            foreach (Download download in dataGrid.SelectedItems)
+            {
+                selectedDownloads.Add(download);
+            }
+
+            foreach (Download download in selectedDownloads)
+            {
+                int selectedIndex = DownloadManager.downloads.IndexOf(download);
+
+                download.Status = "Queued";
+            }
+
+            foreach (Download download in selectedDownloads)
+            {
+                dataGrid.SelectedItems.Add((Download)dataGrid.Items[DownloadManager.downloads.IndexOf(download)]);
+            }
+        }
+
         public void RemoveSelectedDownload(object sender, RoutedEventArgs e)
         {
             List<Download> selectedDownloads = new List<Download>();
