@@ -7,7 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BeatSage_Downloader"
         mc:Ignorable="d"
-        Title="Settings" Height="200" Width="400"
+        Title="Settings" Height="211.22" Width="400"
 
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         BorderThickness="0"
@@ -72,28 +72,37 @@
 
         <TextBlock 
             HorizontalAlignment="Left" 
-            Margin="10,72,0,0" 
+            Margin="10,41,0,0" 
             TextWrapping="Wrap" 
             Text="If blank downloads are saved in 'Downloads' in the program directory" 
-            VerticalAlignment="Top"
+            VerticalAlignment="Top" Width="374"
             />
 
         <CheckBox 
             Content="Enable Automatic Extraction" 
             x:Name="AutomaticExtractionCheckBox"
             HorizontalAlignment="Left" 
-            Margin="25,45,0,0" 
+            Margin="10,62,0,0" 
             VerticalAlignment="Top"
-            Width="175"
+            Width="374"
             />
 
         <CheckBox 
             Content="Overwrite Existing" 
             x:Name="OverwriteExistingCheckBox"
             HorizontalAlignment="Left" 
-            Margin="220,45,0,0" 
+            Margin="10,85,0,0" 
             VerticalAlignment="Top"
-            Width="150"
+            Width="374"
+            />
+
+        <CheckBox 
+            Content="Save Download Queue" 
+            x:Name="SaveDownloadQueueCheckBox"
+            HorizontalAlignment="Left" 
+            Margin="10,108,0,0" 
+            VerticalAlignment="Top"
+            Width="374"
             />
 
     </Grid>

@@ -24,6 +24,7 @@ using System.Runtime.CompilerServices;
 using System.IO;
 using System.IO.Compression;
 using System.Diagnostics;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace BeatSage_Downloader
 {
@@ -38,13 +39,61 @@ namespace BeatSage_Downloader
         {
             InitializeComponent();
             downloadManager = new DownloadManager(dataGrid);
-
+            
             dataGrid.ItemsSource = DownloadManager.Downloads;
-
+            
             if (Directory.Exists("Downloads") == false)
             {
                 Directory.CreateDirectory("Downloads");
             }
+        }
+
+        public static void SaveDownloads()
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                List<Download> downloadsList = new List<Download>();
+
+                foreach (Download download in DownloadManager.downloads)
+                {
+                    downloadsList.Add(download);
+                }
+
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(ms, downloadsList);
+                ms.Position = 0;
+                byte[] buffer = new byte[(int)ms.Length];
+                ms.Read(buffer, 0, buffer.Length);
+                Properties.Settings.Default.savedDownloads = Convert.ToBase64String(buffer);
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static ObservableCollection<Download> GetSavedDownloads()
+        {
+            if ((Properties.Settings.Default.savedDownloads != null) && (Properties.Settings.Default.saveDownloadsQueue))
+            {
+                using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(Properties.Settings.Default.savedDownloads)))
+                {
+                    BinaryFormatter bf = new BinaryFormatter();
+
+                    ObservableCollection<Download> downloads = new ObservableCollection<Download>();
+
+                    foreach (Download download in (List<Download>)bf.Deserialize(ms))
+                    {
+                        if (download.IsAlive)
+                        {
+                            download.Status = "Queued";
+                            download.IsAlive = false;
+                        }
+                        downloads.Add(download);
+                    }
+                    
+                    return downloads;
+                }
+            }
+            return null;
+            
         }
 
         public void OpenAddDownloadWindow(object sender, RoutedEventArgs e)
@@ -52,17 +101,19 @@ namespace BeatSage_Downloader
             AddDownloadWindow addDownloadWindow = new AddDownloadWindow();
             addDownloadWindow.Owner = this;
             addDownloadWindow.ShowDialog();
+            MainWindow.SaveDownloads();
         }
         public void OpenSettingsWindow(object sender, RoutedEventArgs e)
         {
             SettingsWindow settingsWindow = new SettingsWindow();
             settingsWindow.Owner = this;
             settingsWindow.ShowDialog();
+            MainWindow.SaveDownloads();
         }
         private void OnExit(object sender, ExitEventArgs e)
         {
+            MainWindow.SaveDownloads();
             Properties.Settings.Default.Save();
-
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
@@ -103,6 +154,7 @@ namespace BeatSage_Downloader
             {
                 dataGrid.SelectedItems.Add((Download)dataGrid.Items[DownloadManager.downloads.IndexOf(download)]);
             }
+            MainWindow.SaveDownloads();
 
         }
         public void MoveSelectedDownloadDown(object sender, RoutedEventArgs e)
@@ -138,6 +190,7 @@ namespace BeatSage_Downloader
             {
                 dataGrid.SelectedItems.Add((Download)dataGrid.Items[DownloadManager.downloads.IndexOf(download)]);
             }
+            MainWindow.SaveDownloads();
         }
 
         public void RetrySelectedDownload(object sender, RoutedEventArgs e)
@@ -160,6 +213,7 @@ namespace BeatSage_Downloader
             {
                 dataGrid.SelectedItems.Add((Download)dataGrid.Items[DownloadManager.downloads.IndexOf(download)]);
             }
+            MainWindow.SaveDownloads();
         }
 
         public void RemoveSelectedDownload(object sender, RoutedEventArgs e)
@@ -181,10 +235,12 @@ namespace BeatSage_Downloader
             {
                 DownloadManager.downloads.Remove(download);
             }
+            MainWindow.SaveDownloads();
 
         }
     }
 
+    [Serializable]
     public class Download : INotifyPropertyChanged
     {
         private int number;
@@ -391,6 +447,7 @@ namespace BeatSage_Downloader
             }
         }
 
+        [field: NonSerializedAttribute()]
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaiseProperChanged([CallerMemberName] string caller = "")
@@ -398,11 +455,13 @@ namespace BeatSage_Downloader
 
             if (PropertyChanged != null)
             {
+                MainWindow.SaveDownloads();
                 PropertyChanged(this, new PropertyChangedEventArgs(caller));
             }
         }
     }
 
+    [Serializable]
     public class DownloadManager
     {
         public static ObservableCollection<Download> downloads = new ObservableCollection<Download>();
@@ -421,6 +480,11 @@ namespace BeatSage_Downloader
             httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
             httpClient.DefaultRequestHeaders.Add("User-Agent", "BeatSage-Downloader/1.1.2");
 
+            if (MainWindow.GetSavedDownloads() != null)
+            {
+                downloads = MainWindow.GetSavedDownloads();
+            }
+
             Thread worker = new Thread(RunDownloads);
             worker.IsBackground = true;
             worker.SetApartmentState(System.Threading.ApartmentState.STA);
@@ -438,6 +502,8 @@ namespace BeatSage_Downloader
 
             while (true)
             {
+                //MainWindow.SaveDownloads();
+
                 cts = new CancellationTokenSource();
 
                 List<Download> incompleteDownloads = new List<Download>();
@@ -833,6 +899,7 @@ namespace BeatSage_Downloader
 
 
             download.Status = "Completed";
+            download.IsAlive = false;
         }
 
         public static List<string> RetrieveYouTubePlaylist(string playlistULR)

@@ -118,5 +118,29 @@ namespace BeatSage_Downloader.Properties {
                 this["overwriteExisting"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string savedDownloads {
+            get {
+                return ((string)(this["savedDownloads"]));
+            }
+            set {
+                this["savedDownloads"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool saveDownloadsQueue {
+            get {
+                return ((bool)(this["saveDownloadsQueue"]));
+            }
+            set {
+                this["saveDownloadsQueue"] = value;
+            }
+        }
     }
 }

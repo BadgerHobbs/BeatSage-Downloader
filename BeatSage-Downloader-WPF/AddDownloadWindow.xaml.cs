@@ -340,6 +340,8 @@ namespace BeatSage_Downloader
                         ModelVersion = selectedModelVersion,
                         IsAlive = false
                     });
+
+                    MainWindow.SaveDownloads();
                 }
                 else if (linksTextBox.GetLineText(i).Contains(".mp3"))
                 {
@@ -363,6 +365,8 @@ namespace BeatSage_Downloader
                         ModelVersion = selectedModelVersion,
                         IsAlive = false
                     });
+
+                    MainWindow.SaveDownloads();
                 }
             }
 
