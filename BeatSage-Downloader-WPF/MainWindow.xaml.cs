@@ -275,6 +275,7 @@ namespace BeatSage_Downloader
             set
             {
                 number = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -291,6 +292,7 @@ namespace BeatSage_Downloader
                 {
                     Identifier = value;
                 }
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -304,6 +306,7 @@ namespace BeatSage_Downloader
             set
             {
                 title = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -317,6 +320,7 @@ namespace BeatSage_Downloader
             set
             {
                 artist = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -330,6 +334,7 @@ namespace BeatSage_Downloader
             set
             {
                 status = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -343,6 +348,7 @@ namespace BeatSage_Downloader
             set
             {
                 difficulties = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -356,6 +362,7 @@ namespace BeatSage_Downloader
             set
             {
                 gameModes = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -369,6 +376,7 @@ namespace BeatSage_Downloader
             set
             {
                 songEvents = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -382,6 +390,7 @@ namespace BeatSage_Downloader
             set
             {
                 filePath = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -399,6 +408,7 @@ namespace BeatSage_Downloader
                 {
                     Identifier = fileName;
                 }
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -412,6 +422,7 @@ namespace BeatSage_Downloader
             set
             {
                 identifier = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -425,6 +436,7 @@ namespace BeatSage_Downloader
             set
             {
                 environment = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -438,6 +450,7 @@ namespace BeatSage_Downloader
             set
             {
                 modelVersion = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -451,6 +464,7 @@ namespace BeatSage_Downloader
             set
             {
                 isAlive = value;
+                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -603,6 +617,7 @@ namespace BeatSage_Downloader
             if (!response.IsSuccessStatusCode)
             {
                 download.Status = "Unable To Retrieve Metadata";
+                download.IsAlive = false;
                 return;
             }
 
@@ -616,6 +631,7 @@ namespace BeatSage_Downloader
                     {
                         Console.WriteLine("Failed, download greater than 10 mins!");
                         download.Status = "Song >10 Minutes";
+                        download.IsAlive = false;
                         return;
                     }
 
@@ -628,6 +644,7 @@ namespace BeatSage_Downloader
 
                     Console.WriteLine("Failed to Create Custom Level!");
                     download.Status = "Unable To Create Level";
+                    download.IsAlive = false;
                     System.Threading.Thread.Sleep(500);
                 }
             }
@@ -677,6 +694,7 @@ namespace BeatSage_Downloader
                 if (((!Properties.Settings.Default.automaticExtraction) && (File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip"))) || ((Properties.Settings.Default.automaticExtraction) && (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))))
                 {
                     download.Status = "Already Exists";
+                    download.IsAlive = false;
                     return;
                 }
             }
@@ -763,6 +781,7 @@ namespace BeatSage_Downloader
                 if (((!Properties.Settings.Default.automaticExtraction) && (File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip"))) || ((Properties.Settings.Default.automaticExtraction) && (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))))
                 {
                     download.Status = "Already Exists";
+                    download.IsAlive = false;
                     return;
                 }
             }
