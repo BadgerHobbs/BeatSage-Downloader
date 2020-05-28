@@ -71,27 +71,35 @@ namespace BeatSage_Downloader
 
         public static ObservableCollection<Download> GetSavedDownloads()
         {
-            if ((Properties.Settings.Default.savedDownloads != null) && (Properties.Settings.Default.saveDownloadsQueue))
+            try
             {
-                using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(Properties.Settings.Default.savedDownloads)))
+                if ((Properties.Settings.Default.savedDownloads != null) && (Properties.Settings.Default.saveDownloadsQueue))
                 {
-                    BinaryFormatter bf = new BinaryFormatter();
-
-                    ObservableCollection<Download> downloads = new ObservableCollection<Download>();
-
-                    foreach (Download download in (List<Download>)bf.Deserialize(ms))
+                    using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(Properties.Settings.Default.savedDownloads)))
                     {
-                        if (download.IsAlive)
+                        BinaryFormatter bf = new BinaryFormatter();
+
+                        ObservableCollection<Download> downloads = new ObservableCollection<Download>();
+
+                        foreach (Download download in (List<Download>)bf.Deserialize(ms))
                         {
-                            download.Status = "Queued";
-                            download.IsAlive = false;
+                            if (download.IsAlive)
+                            {
+                                download.Status = "Queued";
+                                download.IsAlive = false;
+                            }
+                            downloads.Add(download);
                         }
-                        downloads.Add(download);
+
+                        return downloads;
                     }
-                    
-                    return downloads;
                 }
             }
+            catch
+            {
+                return null;
+            }
+           
             return null;
             
         }
