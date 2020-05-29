@@ -130,7 +130,12 @@ namespace BeatSage_Downloader
 
         public void AddDownloads(object sender, RoutedEventArgs e)
         {
-            loadingLabel.Visibility = Visibility.Visible;
+            if (DownloadManager.downloads.Count >= 100)
+            {
+                RaiseAnError("Maximum of 100 Downloads Reached");
+
+                return;
+            }
 
             DownloadManager downloadManager = MainWindow.downloadManager;
 
@@ -291,6 +296,8 @@ namespace BeatSage_Downloader
 
             selectedModelVersion = GetSelectedModelVersion();
 
+            loadingLabel.Visibility = Visibility.Visible;
+
             for (int i = 0; i < linksTextBox.LineCount; i++)
             {
                 if (DownloadManager.downloads.Count >= 100)
@@ -298,6 +305,7 @@ namespace BeatSage_Downloader
 
                     RaiseAnError("Maximum of 100 Downloads Reached");
 
+                    loadingLabel.Visibility = Visibility.Hidden;
                     return;
                 }
 
@@ -367,9 +375,7 @@ namespace BeatSage_Downloader
             }
 
             loadingLabel.Visibility = Visibility.Hidden;
-
             this.Close();
-
         }
 
         public void CloseWindow(object sender, RoutedEventArgs e)
@@ -477,7 +483,7 @@ namespace BeatSage_Downloader
             ErrorLabel.Visibility = Visibility.Visible;
             ErrorLabelRectangle.Visibility = Visibility.Visible;
 
-            await Task.Delay(2000);
+            await Task.Delay(10000);
 
             ErrorLabel.Visibility = Visibility.Hidden;
             ErrorLabelRectangle.Visibility = Visibility.Hidden;

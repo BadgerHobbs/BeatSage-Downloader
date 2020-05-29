@@ -263,7 +263,7 @@ namespace BeatSage_Downloader
                 DownloadManager.downloads.Remove(download);
             }
 
-            Thread.Sleep(100);
+            Thread.Sleep(250);
             MainWindow.SaveDownloads();
         }
     }
@@ -484,7 +484,6 @@ namespace BeatSage_Downloader
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(caller));
-                MainWindow.SaveDownloads();
             }
         }
     }
@@ -519,8 +518,6 @@ namespace BeatSage_Downloader
             worker.IsBackground = true;
             worker.SetApartmentState(System.Threading.ApartmentState.STA);
             worker.Start();
-
-            //RunDownloads();
             
         }
 
