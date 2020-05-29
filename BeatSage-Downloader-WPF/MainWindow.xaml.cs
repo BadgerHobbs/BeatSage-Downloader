@@ -61,21 +61,29 @@ namespace BeatSage_Downloader
 
         public static void SaveDownloads()
         {
-            using (MemoryStream ms = new MemoryStream())
+            List<Download> downloadsList = new List<Download>();
+
+            foreach (Download download in DownloadManager.downloads)
             {
-                List<Download> downloadsList = new List<Download>();
+                downloadsList.Add(download);
+            }
 
-                foreach (Download download in DownloadManager.downloads)
+            if (downloadsList.Count > 0)
+            {
+                using (MemoryStream ms = new MemoryStream())
                 {
-                    downloadsList.Add(download);
+                    BinaryFormatter bf = new BinaryFormatter();
+                    bf.Serialize(ms, downloadsList);
+                    ms.Position = 0;
+                    byte[] buffer = new byte[(int)ms.Length];
+                    ms.Read(buffer, 0, buffer.Length);
+                    Properties.Settings.Default.savedDownloads = Convert.ToBase64String(buffer);
+                    Properties.Settings.Default.Save();
                 }
-
-                BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize(ms, downloadsList);
-                ms.Position = 0;
-                byte[] buffer = new byte[(int)ms.Length];
-                ms.Read(buffer, 0, buffer.Length);
-                Properties.Settings.Default.savedDownloads = Convert.ToBase64String(buffer);
+            }
+            else
+            {
+                Properties.Settings.Default.savedDownloads = "";
                 Properties.Settings.Default.Save();
             }
         }
@@ -254,8 +262,9 @@ namespace BeatSage_Downloader
             {
                 DownloadManager.downloads.Remove(download);
             }
-            MainWindow.SaveDownloads();
 
+            Thread.Sleep(100);
+            MainWindow.SaveDownloads();
         }
     }
 
@@ -286,7 +295,6 @@ namespace BeatSage_Downloader
             set
             {
                 number = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -303,7 +311,6 @@ namespace BeatSage_Downloader
                 {
                     Identifier = value;
                 }
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -317,7 +324,6 @@ namespace BeatSage_Downloader
             set
             {
                 title = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -331,7 +337,6 @@ namespace BeatSage_Downloader
             set
             {
                 artist = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -345,7 +350,6 @@ namespace BeatSage_Downloader
             set
             {
                 status = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -359,7 +363,6 @@ namespace BeatSage_Downloader
             set
             {
                 difficulties = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -373,7 +376,6 @@ namespace BeatSage_Downloader
             set
             {
                 gameModes = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -387,7 +389,6 @@ namespace BeatSage_Downloader
             set
             {
                 songEvents = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -401,7 +402,6 @@ namespace BeatSage_Downloader
             set
             {
                 filePath = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -419,7 +419,6 @@ namespace BeatSage_Downloader
                 {
                     Identifier = fileName;
                 }
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -433,7 +432,6 @@ namespace BeatSage_Downloader
             set
             {
                 identifier = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -447,7 +445,6 @@ namespace BeatSage_Downloader
             set
             {
                 environment = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -461,7 +458,6 @@ namespace BeatSage_Downloader
             set
             {
                 modelVersion = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -475,7 +471,6 @@ namespace BeatSage_Downloader
             set
             {
                 isAlive = value;
-                MainWindow.SaveDownloads();
                 RaiseProperChanged();
             }
         }
@@ -488,8 +483,8 @@ namespace BeatSage_Downloader
 
             if (PropertyChanged != null)
             {
-                MainWindow.SaveDownloads();
                 PropertyChanged(this, new PropertyChangedEventArgs(caller));
+                MainWindow.SaveDownloads();
             }
         }
     }
@@ -531,14 +526,13 @@ namespace BeatSage_Downloader
 
         public async void RunDownloads()
         {
-
             Console.WriteLine("RunDownloads Started");
 
             int previousNumberOfDownloads = downloads.Count;
 
             while (true)
             {
-                //MainWindow.SaveDownloads();
+                MainWindow.SaveDownloads();
 
                 cts = new CancellationTokenSource();
 
@@ -570,18 +564,26 @@ namespace BeatSage_Downloader
                         catch
                         {
                             currentDownload.Status = "Unable To Retrieve Metadata";
-                            currentDownload.IsAlive = false;
-                            cts.Dispose();
-                            return;
+                            
                         }
+
+                        currentDownload.IsAlive = false;
+                        cts.Dispose();
 
                     }
                     else if ((currentDownload.FilePath != "") && (currentDownload.FilePath != null))
                     {
-                        await CreateCustomLevelFromFile(currentDownload);
+                        try
+                        {
+                            await CreateCustomLevelFromFile(currentDownload);
+                        }
+                        catch
+                        {
+                            currentDownload.Status = "Unable To Create Level";
+                        }
+
                         currentDownload.IsAlive = false;
                         cts.Dispose();
-                        return;
                     }
 
                 }
