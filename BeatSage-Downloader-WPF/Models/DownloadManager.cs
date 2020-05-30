@@ -1,493 +1,21 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MahApps.Metro.Controls;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.Threading;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.IO;
-using System.IO.Compression;
-using System.Diagnostics;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace BeatSage_Downloader
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : MetroWindow
-    {
-        public static DownloadManager downloadManager;
-
-        public static Label updateAvailableLabel;
-
-        public MainWindow()
-        {
-            InitializeComponent();
-            downloadManager = new DownloadManager(dataGrid);
-
-            dataGrid.ItemsSource = DownloadManager.Downloads;
-            updateAvailableLabel = newUpdateAvailableLabel;
-
-            CheckUpdateAvailable();
-
-            if (Directory.Exists("Downloads") == false)
-            {
-                Directory.CreateDirectory("Downloads");
-            }
-        }
-
-        public async void CheckUpdateAvailable()
-        {
-            await DownloadManager.CheckUpdateAvailable();
-        }
-
-
-        public static void SaveDownloads()
-        {
-            List<Download> downloadsList = new List<Download>();
-
-            foreach (Download download in DownloadManager.downloads)
-            {
-                downloadsList.Add(download);
-            }
-
-            if (downloadsList.Count > 0)
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    BinaryFormatter bf = new BinaryFormatter();
-                    bf.Serialize(ms, downloadsList);
-                    ms.Position = 0;
-                    byte[] buffer = new byte[(int)ms.Length];
-                    ms.Read(buffer, 0, buffer.Length);
-                    Properties.Settings.Default.savedDownloads = Convert.ToBase64String(buffer);
-                    Properties.Settings.Default.Save();
-                }
-            }
-            else
-            {
-                Properties.Settings.Default.savedDownloads = "";
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static ObservableCollection<Download> GetSavedDownloads()
-        {
-            try
-            {
-                if ((Properties.Settings.Default.savedDownloads != null) && (Properties.Settings.Default.saveDownloadsQueue))
-                {
-                    using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(Properties.Settings.Default.savedDownloads)))
-                    {
-                        BinaryFormatter bf = new BinaryFormatter();
-
-                        ObservableCollection<Download> downloads = new ObservableCollection<Download>();
-
-                        foreach (Download download in (List<Download>)bf.Deserialize(ms))
-                        {
-                            if (download.IsAlive)
-                            {
-                                download.Status = "Queued";
-                                download.IsAlive = false;
-                            }
-                            downloads.Add(download);
-                        }
-
-                        return downloads;
-                    }
-                }
-            }
-            catch
-            {
-                return null;
-            }
-           
-            return null;
-            
-        }
-
-        public void OpenAddDownloadWindow(object sender, RoutedEventArgs e)
-        {
-            AddDownloadWindow addDownloadWindow = new AddDownloadWindow();
-            addDownloadWindow.Owner = this;
-            addDownloadWindow.ShowDialog();
-            MainWindow.SaveDownloads();
-        }
-        public void OpenSettingsWindow(object sender, RoutedEventArgs e)
-        {
-            SettingsWindow settingsWindow = new SettingsWindow();
-            settingsWindow.Owner = this;
-            settingsWindow.ShowDialog();
-            MainWindow.SaveDownloads();
-        }
-        private void OnExit(object sender, ExitEventArgs e)
-        {
-            MainWindow.SaveDownloads();
-            Properties.Settings.Default.Save();
-        }
-
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = true;
-        }
-        public void MoveSelectedDownloadUp(object sender, RoutedEventArgs e)
-        {
-            List<Download> selectedDownloads = new List<Download>();
-
-            foreach (Download download in dataGrid.SelectedItems)
-            {
-                selectedDownloads.Add(download);
-            }
-
-            selectedDownloads = selectedDownloads.OrderBy(o => DownloadManager.downloads.IndexOf(o)).ToList();
-
-            foreach (Download download in selectedDownloads)
-            {
-                int selectedIndex = DownloadManager.downloads.IndexOf(download);
-
-                if (selectedIndex - 1 >= 0)
-                {
-                    Download selectedDownloadItem = download;
-                    Download downloadItemAbove = (Download)dataGrid.Items[selectedIndex - 1];
-                    DownloadManager.downloads.Remove(selectedDownloadItem);
-                    DownloadManager.downloads.Insert(selectedIndex - 1, selectedDownloadItem);
-                    dataGrid.SelectedIndex = selectedIndex - 1;
-                }
-                else
-                {
-                    return;
-                }
-            }
-
-            foreach (Download download in selectedDownloads)
-            {
-                dataGrid.SelectedItems.Add((Download)dataGrid.Items[DownloadManager.downloads.IndexOf(download)]);
-            }
-            MainWindow.SaveDownloads();
-
-        }
-        public void MoveSelectedDownloadDown(object sender, RoutedEventArgs e)
-        {
-            List<Download> selectedDownloads = new List<Download>();
-
-            foreach (Download download in dataGrid.SelectedItems)
-            {
-                selectedDownloads.Add(download);
-            }
-
-            selectedDownloads = selectedDownloads.OrderBy(o => DownloadManager.downloads.IndexOf(o)).Reverse().ToList();
-
-            foreach (Download download in selectedDownloads)
-            {
-                int selectedIndex = DownloadManager.downloads.IndexOf(download);
-
-                if (selectedIndex + 1 < dataGrid.Items.Count)
-                {
-                    Download selectedDownloadItem = download;
-                    Download downloadItemBelow = (Download)dataGrid.Items[selectedIndex + 1];
-                    DownloadManager.downloads.Remove(selectedDownloadItem);
-                    DownloadManager.downloads.Insert(selectedIndex + 1, selectedDownloadItem);
-                    dataGrid.SelectedIndex = selectedIndex + 1;
-                }
-                else
-                {
-                    return;
-                }
-            }
-
-            foreach (Download download in selectedDownloads)
-            {
-                dataGrid.SelectedItems.Add((Download)dataGrid.Items[DownloadManager.downloads.IndexOf(download)]);
-            }
-            MainWindow.SaveDownloads();
-        }
-
-        public void RetrySelectedDownload(object sender, RoutedEventArgs e)
-        {
-            List<Download> selectedDownloads = new List<Download>();
-
-            foreach (Download download in dataGrid.SelectedItems)
-            {
-                selectedDownloads.Add(download);
-            }
-
-            foreach (Download download in selectedDownloads)
-            {
-                int selectedIndex = DownloadManager.downloads.IndexOf(download);
-
-                download.Status = "Queued";
-            }
-
-            foreach (Download download in selectedDownloads)
-            {
-                dataGrid.SelectedItems.Add((Download)dataGrid.Items[DownloadManager.downloads.IndexOf(download)]);
-            }
-            MainWindow.SaveDownloads();
-        }
-
-        public void RemoveSelectedDownload(object sender, RoutedEventArgs e)
-        {
-            List<Download> selectedDownloads = new List<Download>();
-
-            foreach (Download download in dataGrid.SelectedItems)
-            {
-                if (download.IsAlive == true)
-                {
-                    DownloadManager.cts.Cancel();
-                    DownloadManager.cts.Dispose();
-                }
-
-                selectedDownloads.Add(download);
-            }
-
-            foreach (Download download in selectedDownloads)
-            {
-                DownloadManager.downloads.Remove(download);
-            }
-
-            Thread.Sleep(250);
-            MainWindow.SaveDownloads();
-        }
-    }
-
-    [Serializable]
-    public class Download : INotifyPropertyChanged
-    {
-        private int number;
-        private string youtubeID;
-        private string title;
-        private string artist;
-        private string status;
-        private string difficulties;
-        private string gameModes;
-        private string songEvents;
-        private string filePath;
-        private string fileName;
-        private string identifier;
-        private string environment;
-        private string modelVersion;
-        private bool isAlive;
-
-        public int Number
-        {
-            get
-            {
-                return number;
-            }
-            set
-            {
-                number = value;
-                RaiseProperChanged();
-            }
-        }
-        public string YoutubeID
-        {
-            get
-            {
-                return youtubeID;
-            }
-            set
-            {
-                youtubeID = value;
-                if ((FileName == "") || (FileName == null))
-                {
-                    Identifier = value;
-                }
-                RaiseProperChanged();
-            }
-        }
-
-        public string Title
-        {
-            get
-            {
-                return title;
-            }
-            set
-            {
-                title = value;
-                RaiseProperChanged();
-            }
-        }
-
-        public string Artist
-        {
-            get
-            {
-                return artist;
-            }
-            set
-            {
-                artist = value;
-                RaiseProperChanged();
-            }
-        }
-
-        public string Status
-        {
-            get
-            {
-                return status;
-            }
-            set
-            {
-                status = value;
-                RaiseProperChanged();
-            }
-        }
-
-        public string Difficulties
-        {
-            get
-            {
-                return difficulties;
-            }
-            set
-            {
-                difficulties = value;
-                RaiseProperChanged();
-            }
-        }
-
-        public string GameModes
-        {
-            get
-            {
-                return gameModes;
-            }
-            set
-            {
-                gameModes = value;
-                RaiseProperChanged();
-            }
-        }
-
-        public string SongEvents
-        {
-            get
-            {
-                return songEvents;
-            }
-            set
-            {
-                songEvents = value;
-                RaiseProperChanged();
-            }
-        }
-
-        public string FilePath
-        {
-            get
-            {
-                return filePath;
-            }
-            set
-            {
-                filePath = value;
-                RaiseProperChanged();
-            }
-        }
-
-        public string FileName
-        {
-            get
-            {
-                return fileName;
-            }
-            set
-            {
-                fileName = value;
-                if ((YoutubeID == "") || (YoutubeID == null))
-                {
-                    Identifier = fileName;
-                }
-                RaiseProperChanged();
-            }
-        }
-
-        public string Identifier
-        {
-            get
-            {
-                return identifier;
-            }
-            set
-            {
-                identifier = value;
-                RaiseProperChanged();
-            }
-        }
-
-        public string Environment
-        {
-            get
-            {
-                return environment;
-            }
-            set
-            {
-                environment = value;
-                RaiseProperChanged();
-            }
-        }
-
-        public string ModelVersion
-        {
-            get
-            {
-                return modelVersion;
-            }
-            set
-            {
-                modelVersion = value;
-                RaiseProperChanged();
-            }
-        }
-
-        public bool IsAlive
-        {
-            get
-            {
-                return isAlive;
-            }
-            set
-            {
-                isAlive = value;
-                RaiseProperChanged();
-            }
-        }
-
-        [field: NonSerializedAttribute()]
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void RaiseProperChanged([CallerMemberName] string caller = "")
-        {
-
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(caller));
-            }
-        }
-    }
-
     [Serializable]
     public class DownloadManager
     {
@@ -514,11 +42,13 @@ namespace BeatSage_Downloader
                 downloads = MainWindow.GetSavedDownloads();
             }
 
-            Thread worker = new Thread(RunDownloads);
-            worker.IsBackground = true;
+            Thread worker = new Thread(RunDownloads)
+            {
+                IsBackground = true
+            };
             worker.SetApartmentState(System.Threading.ApartmentState.STA);
             worker.Start();
-            
+
         }
 
         public async void RunDownloads()
@@ -561,7 +91,7 @@ namespace BeatSage_Downloader
                         catch
                         {
                             currentDownload.Status = "Unable To Retrieve Metadata";
-                            
+
                         }
 
                         currentDownload.IsAlive = false;
@@ -589,7 +119,7 @@ namespace BeatSage_Downloader
                 System.Threading.Thread.Sleep(1000);
             }
 
-            
+
         }
 
         public static async Task CheckUpdateAvailable()
@@ -730,7 +260,7 @@ namespace BeatSage_Downloader
             {
                 artistName = (string)responseData["uploader"];
             }
-            
+
             var invalids = System.IO.Path.GetInvalidFileNameChars();
 
             trackName = String.Join("_", trackName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
@@ -841,10 +371,10 @@ namespace BeatSage_Downloader
                 }
             }
 
-            byte[] bytes = System.IO.File.ReadAllBytes(download.FilePath);
+            byte[] bytes = File.ReadAllBytes(download.FilePath);
 
             string boundary = "----WebKitFormBoundaryaA38RFcmCeKFPOms";
-            var content = new MultipartFormDataContent(boundary);            
+            var content = new MultipartFormDataContent(boundary);
 
             content.Add(new ByteArrayContent(bytes), "audio_file", download.FileName);
 
@@ -856,7 +386,7 @@ namespace BeatSage_Downloader
                 imageContent.Headers.Add("Content-Type", "image/jpeg");
                 content.Add(imageContent);
             }
-            
+
             content.Add(new StringContent(trackName), "audio_metadata_title");
             content.Add(new StringContent(artistName), "audio_metadata_artist");
             content.Add(new StringContent(download.Difficulties), "difficulties");
@@ -883,7 +413,7 @@ namespace BeatSage_Downloader
         static async Task CheckDownload(string levelId, string trackName, string artistName, Download download)
         {
             download.Status = "Generating Custom Level";
-            
+
             string url = "https://beatsage.com/beatsaber_custom_level_heartbeat/" + levelId;
 
             Console.WriteLine(url);
@@ -956,7 +486,7 @@ namespace BeatSage_Downloader
                 {
                     Directory.Delete(fileName);
                 }
-                
+
                 if (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))
                 {
                     Directory.Delete(Properties.Settings.Default.outputDirectory + @"\" + fileName, true);
