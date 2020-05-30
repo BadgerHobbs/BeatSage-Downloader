@@ -138,6 +138,7 @@
     </ApplicationDefinition>
     <Compile Include="Models\Download.cs" />
     <Compile Include="Models\DownloadManager.cs" />
+    <Compile Include="Services\YoutubeService.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>

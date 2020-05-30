@@ -2,21 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using MahApps.Metro.Controls;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Net.Http;
-using Newtonsoft.Json;
 using System.Threading;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.IO;
-using System.IO.Compression;
 using System.Diagnostics;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -27,10 +18,12 @@ namespace BeatSage_Downloader
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        //Fields
         public static DownloadManager downloadManager;
 
         public static Label updateAvailableLabel;
 
+        //Constructor
         public MainWindow()
         {
             InitializeComponent();
@@ -47,11 +40,11 @@ namespace BeatSage_Downloader
             }
         }
 
+        //Methods
         public async void CheckUpdateAvailable()
         {
             await DownloadManager.CheckUpdateAvailable();
         }
-
 
         public static void SaveDownloads()
         {
@@ -126,6 +119,7 @@ namespace BeatSage_Downloader
             addDownloadWindow.ShowDialog();
             MainWindow.SaveDownloads();
         }
+
         public void OpenSettingsWindow(object sender, RoutedEventArgs e)
         {
             SettingsWindow settingsWindow = new SettingsWindow
@@ -135,6 +129,7 @@ namespace BeatSage_Downloader
             settingsWindow.ShowDialog();
             MainWindow.SaveDownloads();
         }
+
         private void OnExit(object sender, ExitEventArgs e)
         {
             MainWindow.SaveDownloads();
@@ -146,6 +141,7 @@ namespace BeatSage_Downloader
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
         }
+
         public void MoveSelectedDownloadUp(object sender, RoutedEventArgs e)
         {
             List<Download> selectedDownloads = new List<Download>();
@@ -182,6 +178,7 @@ namespace BeatSage_Downloader
             MainWindow.SaveDownloads();
 
         }
+
         public void MoveSelectedDownloadDown(object sender, RoutedEventArgs e)
         {
             List<Download> selectedDownloads = new List<Download>();
