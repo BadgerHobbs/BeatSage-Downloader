@@ -3,9 +3,9 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -13,21 +13,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using YoutubeExplode;
-using YoutubeExplode.Videos.Streams;
 
 namespace BeatSage_Downloader
 {
     [Serializable]
-    public class DownloadManager
+    public class DownloadManager : INotifyPropertyChanged
     {
         //Fields
         public static ObservableCollection<Download> downloads = new ObservableCollection<Download>();
         public static readonly HttpClient httpClient = new HttpClient();
         public static CancellationTokenSource cts;
         public static Label newUpdateAvailableLabel;
-        public static ObservableCollection<Download> Downloads { get; }
-        
+
+        [field: NonSerialized()]
+        public event PropertyChangedEventHandler PropertyChanged;
+
         //Constructor
         public DownloadManager()
         {
@@ -85,7 +85,7 @@ namespace BeatSage_Downloader
                         {
                             if (Properties.Settings.Default.enableLocalYouTubeDownload)
                             {
-                                await YoutubeService.CreateCustomLevelWithLocalMP3Download(itemUrl, currentDownload, httpClient, cts);
+                                await CustomLevelService.CreateWithLocalMP3Download(itemUrl, currentDownload, httpClient, cts);
                             }
                             else
                             {
@@ -106,7 +106,7 @@ namespace BeatSage_Downloader
                     {
                         try
                         {
-                            await DownloadManager.CreateCustomLevelFromFile(currentDownload);
+                            await CustomLevelService.CreateFromFile(currentDownload, httpClient, cts);
                         }
                         catch
                         {
@@ -173,7 +173,7 @@ namespace BeatSage_Downloader
 
         public static async Task CreateCustomLevelWithLocalMP3Download(string url, Download download)
         {
-            await YoutubeService.CreateCustomLevelWithLocalMP3Download(url, download, httpClient, cts);
+            await CustomLevelService.CreateWithLocalMP3Download(url, download, httpClient, cts);
         }
 
         public async static Task RetrieveMetaData(string url, Download download)
@@ -219,7 +219,7 @@ namespace BeatSage_Downloader
                         return;
                     }
 
-                    await CreateCustomLevel(jsonString, download);
+                    await CustomLevelService.Create(jsonString, download, httpClient, cts);
                     break;
                 }
                 catch
@@ -232,181 +232,6 @@ namespace BeatSage_Downloader
                     System.Threading.Thread.Sleep(500);
                 }
             }
-        }
-
-        static async Task CreateCustomLevel(JObject responseData, Download download)
-        {
-            download.Status = "Generating Custom Level";
-
-            string trackName = "Unknown";
-
-            if (((string)responseData["track"]) != null)
-            {
-                trackName = (string)responseData["track"];
-            }
-            else if (((string)responseData["fulltitle"]) != null)
-            {
-                trackName = (string)responseData["fulltitle"];
-            }
-
-            string artistName = "Unknown";
-
-            if (((string)responseData["artist"]) != null)
-            {
-                artistName = (string)responseData["artist"];
-            }
-            else if (((string)responseData["uploader"]) != null)
-            {
-                artistName = (string)responseData["uploader"];
-            }
-
-            var invalids = System.IO.Path.GetInvalidFileNameChars();
-
-            trackName = String.Join("_", trackName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
-            artistName = String.Join("_", artistName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
-
-            Console.WriteLine("trackName: " + trackName);
-            Console.WriteLine("artistName: " + artistName);
-
-            download.Title = trackName;
-            download.Artist = artistName;
-
-            string fileName = "[BSD] " + trackName + " - " + artistName;
-
-            if (!Properties.Settings.Default.overwriteExisting)
-            {
-                if (((!Properties.Settings.Default.automaticExtraction) && (File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip"))) || ((Properties.Settings.Default.automaticExtraction) && (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))))
-                {
-                    download.Status = "Already Exists";
-                    download.IsAlive = false;
-                    return;
-                }
-            }
-
-            Console.WriteLine("download.Title: " + download.Title);
-            Console.WriteLine("download.Artist : " + download.Artist);
-
-            string boundary = "----WebKitFormBoundaryaA38RFcmCeKFPOms";
-            var content = new MultipartFormDataContent(boundary);
-
-            content.Add(new StringContent((string)responseData["webpage_url"]), "youtube_url");
-
-            var imageContent = new ByteArrayContent((byte[])responseData["beatsage_thumbnail"]);
-            imageContent.Headers.Remove("Content-Type");
-            imageContent.Headers.Add("Content-Disposition", "form-data; name=\"cover_art\"; filename=\"cover\"");
-            imageContent.Headers.Add("Content-Type", "image/jpeg");
-            content.Add(imageContent);
-
-            content.Add(new StringContent(trackName), "audio_metadata_title");
-            content.Add(new StringContent(artistName), "audio_metadata_artist");
-            content.Add(new StringContent(download.Difficulties), "difficulties");
-            content.Add(new StringContent(download.GameModes), "modes");
-            content.Add(new StringContent(download.SongEvents), "events");
-            content.Add(new StringContent(download.Environment), "environment");
-            content.Add(new StringContent(download.ModelVersion), "system_tag");
-
-            var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content, cts.Token);
-
-            var responseString = await response.Content.ReadAsStringAsync();
-
-            Console.WriteLine(responseString);
-
-            JObject jsonString = JObject.Parse(responseString);
-
-            string levelID = (string)jsonString["id"];
-
-            Console.WriteLine(levelID);
-
-            await CheckDownload(levelID, trackName, artistName, download);
-        }
-
-        public static async Task CreateCustomLevelFromFile(Download download)
-        {
-            download.Status = "Uploading File";
-
-            TagLib.File tagFile = TagLib.File.Create(download.FilePath);
-
-            string artistName = "Unknown";
-            byte[] imageData = null;
-
-            var invalids = System.IO.Path.GetInvalidFileNameChars();
-
-            if (tagFile.Tag.FirstPerformer != null)
-            {
-                artistName = String.Join("_", tagFile.Tag.FirstPerformer.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
-            }
-
-            string trackName;
-            if (tagFile.Tag.Title != null)
-            {
-                trackName = String.Join("_", tagFile.Tag.Title.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
-            }
-            else
-            {
-                trackName = System.IO.Path.GetFileNameWithoutExtension(download.FilePath);
-            }
-
-            if (tagFile.Tag.Pictures.Count() > 0)
-            {
-                if (tagFile.Tag.Pictures[0].Data.Data != null)
-                {
-                    imageData = tagFile.Tag.Pictures[0].Data.Data;
-                }
-            }
-
-
-            download.Artist = artistName;
-            download.Title = trackName;
-
-            string fileName = "[BSD] " + trackName + " - " + artistName;
-
-            if (!Properties.Settings.Default.overwriteExisting)
-            {
-                if (((!Properties.Settings.Default.automaticExtraction) && (File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip"))) || ((Properties.Settings.Default.automaticExtraction) && (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))))
-                {
-                    download.Status = "Already Exists";
-                    download.IsAlive = false;
-                    return;
-                }
-            }
-
-            byte[] bytes = File.ReadAllBytes(download.FilePath);
-
-            string boundary = "----WebKitFormBoundaryaA38RFcmCeKFPOms";
-            var content = new MultipartFormDataContent(boundary);
-
-            content.Add(new ByteArrayContent(bytes), "audio_file", download.FileName);
-
-            if (imageData != null)
-            {
-                var imageContent = new ByteArrayContent(imageData);
-                imageContent.Headers.Remove("Content-Type");
-                imageContent.Headers.Add("Content-Disposition", "form-data; name=\"cover_art\"; filename=\"cover\"");
-                imageContent.Headers.Add("Content-Type", "image/jpeg");
-                content.Add(imageContent);
-            }
-
-            content.Add(new StringContent(trackName), "audio_metadata_title");
-            content.Add(new StringContent(artistName), "audio_metadata_artist");
-            content.Add(new StringContent(download.Difficulties), "difficulties");
-            content.Add(new StringContent(download.GameModes), "modes");
-            content.Add(new StringContent(download.SongEvents), "events");
-            content.Add(new StringContent(download.Environment), "environment");
-            content.Add(new StringContent(download.ModelVersion), "system_tag");
-
-            var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content, cts.Token);
-
-            var responseString = await response.Content.ReadAsStringAsync();
-
-            Console.WriteLine(responseString);
-
-            JObject jsonString = JObject.Parse(responseString);
-
-            string levelID = (string)jsonString["id"];
-
-            Console.WriteLine(levelID);
-
-            await CheckDownload(levelID, trackName, artistName, download);
         }
 
         public static async Task CheckDownload(string levelId, string trackName, string artistName, Download download)

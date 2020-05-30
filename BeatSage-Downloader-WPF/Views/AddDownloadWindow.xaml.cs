@@ -316,7 +316,7 @@ namespace BeatSage_Downloader
 
                     if (youtubeID.Contains("&"))
                     {
-                        youtubeID = youtubeID.Substring(0,youtubeID.IndexOf("&"));
+                        youtubeID = youtubeID.Substring(0, youtubeID.IndexOf("&"));
                     }
 
                     Console.WriteLine("Youtube ID: " + youtubeID);
@@ -375,7 +375,7 @@ namespace BeatSage_Downloader
         public void ImportPlaylist(object sender, RoutedEventArgs e)
         {
             loadingLabel.Visibility = Visibility.Visible;
-           try
+            try
             {
                 YoutubeService.ImportPlaylist(linksTextBox, playlistURLTextBox);
             }
@@ -525,8 +525,8 @@ namespace BeatSage_Downloader
                     SongEventsObstaclesCheckBox.IsEnabled = true;
                 }
             }
-            catch {}
-            
+            catch { }
+
         }
 
     }

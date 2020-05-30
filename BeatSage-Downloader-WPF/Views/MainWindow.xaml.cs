@@ -1,15 +1,15 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using MahApps.Metro.Controls;
-using System.Threading;
-using System.IO;
-using System.Diagnostics;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace BeatSage_Downloader
 {
@@ -29,7 +29,7 @@ namespace BeatSage_Downloader
             InitializeComponent();
             downloadManager = new DownloadManager();
 
-            dataGrid.ItemsSource = DownloadManager.Downloads;
+            dataGrid.ItemsSource = DownloadManager.downloads;
             updateAvailableLabel = newUpdateAvailableLabel;
 
             CheckUpdateAvailable();
