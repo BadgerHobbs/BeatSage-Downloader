@@ -36,7 +36,7 @@ namespace BeatSage_Downloader
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
                 System.Windows.Forms.DialogResult result = dialog.ShowDialog();
-                
+
                 if (result.ToString() == "OK" && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
                 {
                     OutputDirectoryTextBox.Text = dialog.SelectedPath;
@@ -50,7 +50,7 @@ namespace BeatSage_Downloader
 
         public void SaveButton(object sender, RoutedEventArgs e)
         {
-            
+
             Properties.Settings.Default.automaticExtraction = (bool)AutomaticExtractionCheckBox.IsChecked;
             Properties.Settings.Default.overwriteExisting = (bool)OverwriteExistingCheckBox.IsChecked;
             Properties.Settings.Default.saveDownloadsQueue = (bool)SaveDownloadQueueCheckBox.IsChecked;
