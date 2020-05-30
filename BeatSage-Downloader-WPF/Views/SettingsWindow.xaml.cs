@@ -1,18 +1,5 @@
 ﻿using MahApps.Metro.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Windows.Forms;
 
 namespace BeatSage_Downloader
 {
@@ -37,7 +24,7 @@ namespace BeatSage_Downloader
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
                 System.Windows.Forms.DialogResult result = dialog.ShowDialog();
-                
+
                 if (result.ToString() == "OK" && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
                 {
                     OutputDirectoryTextBox.Text = dialog.SelectedPath;
@@ -51,7 +38,7 @@ namespace BeatSage_Downloader
 
         public void SaveButton(object sender, RoutedEventArgs e)
         {
-            
+
             Properties.Settings.Default.automaticExtraction = (bool)AutomaticExtractionCheckBox.IsChecked;
             Properties.Settings.Default.overwriteExisting = (bool)OverwriteExistingCheckBox.IsChecked;
             Properties.Settings.Default.saveDownloadsQueue = (bool)SaveDownloadQueueCheckBox.IsChecked;
