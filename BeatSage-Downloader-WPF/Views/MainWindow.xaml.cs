@@ -34,7 +34,7 @@ namespace BeatSage_Downloader
         public MainWindow()
         {
             InitializeComponent();
-            downloadManager = new DownloadManager(dataGrid);
+            downloadManager = new DownloadManager();
 
             dataGrid.ItemsSource = DownloadManager.Downloads;
             updateAvailableLabel = newUpdateAvailableLabel;
@@ -229,8 +229,6 @@ namespace BeatSage_Downloader
 
             foreach (Download download in selectedDownloads)
             {
-                int selectedIndex = DownloadManager.downloads.IndexOf(download);
-
                 download.Status = "Queued";
             }
 
