@@ -235,7 +235,10 @@ namespace BeatSage_Downloader
             {
                 int selectedIndex = DownloadManager.downloads.IndexOf(download);
 
-                download.Status = "Queued";
+                if (!download.IsAlive)
+                {
+                    download.Status = "Queued";
+                }
             }
 
             foreach (Download download in selectedDownloads)
@@ -725,8 +728,29 @@ namespace BeatSage_Downloader
             {
                 File.Delete(download.FilePath);
             }
-
+            
             content.Add(new ByteArrayContent(bytes), "audio_file", download.FilePath);
+
+            using (WebClient client = new WebClient())
+            {
+                client.DownloadFile(new Uri("https://img.youtube.com/vi/" + video.Id + "/maxresdefault.jpg"), "cover.jpg");
+            }
+
+            byte[] imageData = System.IO.File.ReadAllBytes("cover.jpg");
+
+            if (imageData != null)
+            {
+                var imageContent = new ByteArrayContent(imageData);
+                imageContent.Headers.Remove("Content-Type");
+                imageContent.Headers.Add("Content-Disposition", "form-data; name=\"cover_art\"; filename=\"cover\"");
+                imageContent.Headers.Add("Content-Type", "image/jpeg");
+                content.Add(imageContent);
+            }
+
+            if (File.Exists("cover.jpg"))
+            {
+                File.Delete("cover.jpg");
+            }
 
             content.Add(new StringContent(trackName), "audio_metadata_title");
             content.Add(new StringContent(artistName), "audio_metadata_artist");
