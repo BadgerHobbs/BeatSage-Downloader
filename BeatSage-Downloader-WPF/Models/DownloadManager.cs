@@ -13,26 +13,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using YoutubeExplode;
+using YoutubeExplode.Videos.Streams;
 
 namespace BeatSage_Downloader
 {
     [Serializable]
     public class DownloadManager
     {
+        //Fields
         public static ObservableCollection<Download> downloads = new ObservableCollection<Download>();
-
         public static readonly HttpClient httpClient = new HttpClient();
-
-        private static DataGrid dataGrid;
-
         public static CancellationTokenSource cts;
-
         public static Label newUpdateAvailableLabel;
-
-        public DownloadManager(DataGrid newDataGrid)
+        public static ObservableCollection<Download> Downloads { get; }
+        
+        //Constructor
+        public DownloadManager()
         {
-            dataGrid = newDataGrid;
-
             httpClient.DefaultRequestHeaders.Add("Host", "beatsage.com");
             httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
             httpClient.DefaultRequestHeaders.Add("User-Agent", "BeatSage-Downloader/1.2.1");
@@ -51,11 +49,10 @@ namespace BeatSage_Downloader
 
         }
 
+        //Methods
         public async void RunDownloads()
         {
             Console.WriteLine("RunDownloads Started");
-
-            int previousNumberOfDownloads = downloads.Count;
 
             while (true)
             {
@@ -86,7 +83,14 @@ namespace BeatSage_Downloader
 
                         try
                         {
-                            await RetrieveMetaData(itemUrl, currentDownload);
+                            if (Properties.Settings.Default.enableLocalYouTubeDownload)
+                            {
+                                await YoutubeService.CreateCustomLevelWithLocalMP3Download(itemUrl, currentDownload, httpClient, cts);
+                            }
+                            else
+                            {
+                                await DownloadManager.RetrieveMetaData(itemUrl, currentDownload);
+                            }
                         }
                         catch
                         {
@@ -102,7 +106,7 @@ namespace BeatSage_Downloader
                     {
                         try
                         {
-                            await CreateCustomLevelFromFile(currentDownload);
+                            await DownloadManager.CreateCustomLevelFromFile(currentDownload);
                         }
                         catch
                         {
@@ -117,9 +121,8 @@ namespace BeatSage_Downloader
 
                 cts.Dispose();
                 System.Threading.Thread.Sleep(1000);
+
             }
-
-
         }
 
         public static async Task CheckUpdateAvailable()
@@ -163,18 +166,14 @@ namespace BeatSage_Downloader
             }
         }
 
-
-        public static ObservableCollection<Download> Downloads
-        {
-            get
-            {
-                return downloads;
-            }
-        }
-
         public void Add(Download download)
         {
             downloads.Add(download);
+        }
+
+        public static async Task CreateCustomLevelWithLocalMP3Download(string url, Download download)
+        {
+            await YoutubeService.CreateCustomLevelWithLocalMP3Download(url, download, httpClient, cts);
         }
 
         public async static Task RetrieveMetaData(string url, Download download)
@@ -321,14 +320,13 @@ namespace BeatSage_Downloader
             await CheckDownload(levelID, trackName, artistName, download);
         }
 
-        static async Task CreateCustomLevelFromFile(Download download)
+        public static async Task CreateCustomLevelFromFile(Download download)
         {
             download.Status = "Uploading File";
 
             TagLib.File tagFile = TagLib.File.Create(download.FilePath);
 
             string artistName = "Unknown";
-            string trackName = "Unknown";
             byte[] imageData = null;
 
             var invalids = System.IO.Path.GetInvalidFileNameChars();
@@ -338,6 +336,7 @@ namespace BeatSage_Downloader
                 artistName = String.Join("_", tagFile.Tag.FirstPerformer.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
             }
 
+            string trackName;
             if (tagFile.Tag.Title != null)
             {
                 trackName = String.Join("_", tagFile.Tag.Title.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
@@ -410,7 +409,7 @@ namespace BeatSage_Downloader
             await CheckDownload(levelID, trackName, artistName, download);
         }
 
-        static async Task CheckDownload(string levelId, string trackName, string artistName, Download download)
+        public static async Task CheckDownload(string levelId, string trackName, string artistName, Download download)
         {
             download.Status = "Generating Custom Level";
 
@@ -443,12 +442,10 @@ namespace BeatSage_Downloader
                     JObject jsonString = JObject.Parse(responseString);
 
                     levelStatus = (string)jsonString["status"];
-
                 }
                 catch
                 {
                 }
-
             }
 
             if (levelStatus == "DONE")
@@ -512,67 +509,6 @@ namespace BeatSage_Downloader
 
             download.Status = "Completed";
             download.IsAlive = false;
-        }
-
-        public static List<string> RetrieveYouTubePlaylist(string playlistULR)
-        {
-            string cleanPlaylistURL = playlistULR.Replace("watch?v", "playlist?v").Replace("music.", "");
-
-            string htmlContent = new WebClient().DownloadString(cleanPlaylistURL);
-
-            List<string> urls = new List<string>();
-
-            string searchString = "data-video-id=";
-
-            int htmlPointerLocation = 1;
-
-            while (htmlPointerLocation > 0)
-            {
-
-                htmlPointerLocation = htmlContent.IndexOf(searchString);
-
-                if (htmlPointerLocation > 0)
-                {
-                    string temporaryURL = "";
-
-                    int i = 0;
-
-                    for (i = (htmlPointerLocation + searchString.Count() + 1); i < htmlContent.Count(); i++)
-                    {
-                        if (htmlContent[i].ToString() != "\"")
-                        {
-                            temporaryURL += htmlContent[i];
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    htmlContent = htmlContent.Substring(i);
-
-                    string newURL = "https://www.youtube.com/watch?v=" + temporaryURL;
-
-                    bool alreadyExists = false;
-
-                    foreach (string currentURL in urls)
-                    {
-                        if ((currentURL == newURL) || (newURL.Contains(currentURL)))
-                        {
-                            alreadyExists = true;
-                            break;
-                        }
-                    }
-
-                    if (alreadyExists == false)
-                    {
-                        Console.WriteLine(newURL);
-                        urls.Add(newURL);
-                    }
-                }
-            }
-
-            return urls;
         }
     }
 }

@@ -35,5 +35,8 @@
     <Setting Name="currentVersion" Type="System.String" Scope="User">
       <Value Profile="(Default)">v1.2.1</Value>
     </Setting>
+    <Setting Name="enableLocalYouTubeDownload" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

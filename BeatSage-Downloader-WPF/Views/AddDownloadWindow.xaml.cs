@@ -1,20 +1,12 @@
 ﻿using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace BeatSage_Downloader
 {
@@ -56,7 +48,6 @@ namespace BeatSage_Downloader
                 DifficultyExpertPlusCheckBox.IsChecked = true;
             }
 
-
             if (previousGameModes.Contains("Standard"))
             {
                 GameModeStandardCheckBox.IsChecked = true;
@@ -81,7 +72,6 @@ namespace BeatSage_Downloader
             {
                 GameMode360DegreesCheckBox.IsChecked = true;
             }
-
 
             if (previousSongEvents.Contains("DotBlocks"))
             {
@@ -124,7 +114,6 @@ namespace BeatSage_Downloader
                     }
                 }
             }
-
 
         }
 
@@ -386,51 +375,16 @@ namespace BeatSage_Downloader
         public void ImportPlaylist(object sender, RoutedEventArgs e)
         {
             loadingLabel.Visibility = Visibility.Visible;
-            try
+           try
             {
-                List<string> youtubeURLS = DownloadManager.RetrieveYouTubePlaylist(playlistURLTextBox.Text);
-
-                if (linksTextBox.Text == "Enter YouTube Links Here (Separate Lines)")
-                {
-                    var converter = new System.Windows.Media.BrushConverter();
-                    linksTextBox.Text = "";
-                    linksTextBox.Foreground = (Brush)converter.ConvertFromString("#FFFFFFFF");
-                }
-                else
-                {
-                    linksTextBox.AppendText("\n");
-                }
-
-                foreach (string youtubeURL in youtubeURLS)
-                {
-                    linksTextBox.AppendText(youtubeURL + "\n");
-                }
+                YoutubeService.ImportPlaylist(linksTextBox, playlistURLTextBox);
             }
             catch
             {
-
                 RaiseAnError("Please Enter a Valid YouTube Playlist URL");
-
             }
-
             playlistURLTextBox.Text = "";
             loadingLabel.Visibility = Visibility.Hidden;
-        }
-
-        private void ErrorModeLabel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaiseProperChanged([CallerMemberName] string caller = "")
-        {
-
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(caller));
-            }
         }
 
         public void PlaylistTextBoxFocusChange(object sender, RoutedEventArgs e)

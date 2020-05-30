@@ -15,6 +15,8 @@ namespace BeatSage_Downloader
 
         public int Number { get; set; }
 
+        public string Identifier { get; set; }
+
         public string YoutubeID { get; set; }
         private void OnYoutubeIDChanged()
         {
@@ -47,8 +49,6 @@ namespace BeatSage_Downloader
                 Identifier = FileName;
             }
         }
-
-        public string Identifier { get; set; }
 
         public string Environment { get; set; }
 
