@@ -733,7 +733,28 @@ namespace BeatSage_Downloader
 
             using (WebClient client = new WebClient())
             {
-                client.DownloadFile(new Uri("https://img.youtube.com/vi/" + video.Id + "/maxresdefault.jpg"), "cover.jpg");
+                try
+                {
+                    client.DownloadFile(new Uri("https://img.youtube.com/vi/" + video.Id + "/maxresdefault.jpg"), "cover.jpg");
+                }
+                catch
+                {
+                    try
+                    {
+                        client.DownloadFile(new Uri("https://img.youtube.com/vi/" + video.Id + "/sddefault.jpg"), "cover.jpg");
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            client.DownloadFile(new Uri("https://img.youtube.com/vi/" + video.Id + "/hqdefault.jpg"), "cover.jpg");
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
             }
 
             byte[] imageData = System.IO.File.ReadAllBytes("cover.jpg");
