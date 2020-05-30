@@ -417,22 +417,6 @@ namespace BeatSage_Downloader
             loadingLabel.Visibility = Visibility.Hidden;
         }
 
-        private void ErrorModeLabel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaiseProperChanged([CallerMemberName] string caller = "")
-        {
-
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(caller));
-            }
-        }
-
         public void PlaylistTextBoxFocusChange(object sender, RoutedEventArgs e)
         {
             var converter = new System.Windows.Media.BrushConverter();

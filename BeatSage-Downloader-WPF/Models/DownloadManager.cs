@@ -21,15 +21,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.Threading;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.IO;
-using System.IO.Compression;
 using System.Diagnostics;
 using System.Runtime.Serialization.Formatters.Binary;
 using YoutubeExplode;
@@ -679,8 +672,7 @@ namespace BeatSage_Downloader
                 {
                     string temporaryURL = "";
 
-                    int i = 0;
-
+                    int i;
                     for (i = (htmlPointerLocation + searchString.Count() + 1); i < htmlContent.Count(); i++)
                     {
                         if (htmlContent[i].ToString() != "\"")

@@ -265,8 +265,4 @@ namespace BeatSage_Downloader
             MainWindow.SaveDownloads();
         }
     }
-
-
-
-
 }
