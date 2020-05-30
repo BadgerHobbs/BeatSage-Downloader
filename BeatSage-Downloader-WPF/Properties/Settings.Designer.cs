@@ -154,5 +154,17 @@ namespace BeatSage_Downloader.Properties {
                 this["currentVersion"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool enableLocalYouTubeDownload {
+            get {
+                return ((bool)(this["enableLocalYouTubeDownload"]));
+            }
+            set {
+                this["enableLocalYouTubeDownload"] = value;
+            }
+        }
     }
 }
