@@ -4,8 +4,6 @@
 
 ### Please Note: This software is unofficial and in no way affiliated with [Beat Sage](https://beatsage.com/#)
 
-
-
 Features
 ======
 
@@ -17,6 +15,12 @@ Features
 - Directly import YouTube and YouTube music playlists
 - Saves your previous options so you don't have to keep selecting your favorites
 - Select your Beat Saber install directory as the output, add maps directly into your game
+- Keep your download queue after restarting the app
+- Ability to download YouTube MP3s locally (enabled by default)
+- Delete, retry and move downloads within the queue
+- Choose whether to overwrite any existing downloads
+- Choose whether to automatically extract the downloads into folders
+- Added option for per song random environments
 
 
 Usage
@@ -34,8 +38,8 @@ Usage
 Screenshots
 ======
 
-![Image](https://i.ibb.co/0nmc1By/image.png)
+![Image](https://i.ibb.co/LNC69T6/image.png)
 
-![Image](https://i.ibb.co/jwLZ2Qy/image.png)
+![Image](https://i.ibb.co/wQ0mnNG/image.png)
 
-![Image](https://i.ibb.co/R9tTwSQ/image.png)
+![Image](https://i.ibb.co/Ld0Xnpn/image.png)
