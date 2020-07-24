@@ -33,7 +33,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="currentVersion" Type="System.String" Scope="User">
-      <Value Profile="(Default)">v1.2.2</Value>
+      <Value Profile="(Default)">v1.2.3</Value>
     </Setting>
     <Setting Name="enableLocalYouTubeDownload" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
