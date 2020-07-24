@@ -1112,18 +1112,18 @@ namespace BeatSage_Downloader
 
             if (Properties.Settings.Default.automaticExtraction)
             {
-                client.DownloadFile(uri, "temp.zip");
-
                 download.Status = "Extracting";
 
                 if (Directory.Exists("temp.zip"))
                 {
                     Directory.Delete("temp.zip");
                 }
-                
-                if (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\temp.zip"))
+
+                client.DownloadFile(uri, "temp.zip");
+
+                if (Directory.Exists(filePath))
                 {
-                    Directory.Delete(Properties.Settings.Default.outputDirectory + @"\temp.zip", true);
+                    Directory.Delete(filePath, true);
                 }
 
                 ZipFile.ExtractToDirectory("temp.zip", filePath);
