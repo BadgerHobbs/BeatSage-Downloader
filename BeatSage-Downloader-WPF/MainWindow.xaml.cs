@@ -1097,6 +1097,19 @@ namespace BeatSage_Downloader
 
             string fileName = "[BSD] " + trackName + " - " + artistName;
 
+            string filePath;
+
+            if (pathLength + fileName.Count() >= 245)
+            {
+                filePath = (System.IO.Path.GetFullPath(Properties.Settings.Default.outputDirectory) + @"\" + fileName).Substring(0, 244 - pathLength);
+
+            }
+            else
+            {
+                filePath = Properties.Settings.Default.outputDirectory + @"\" + fileName;
+            }
+
+
             if (Properties.Settings.Default.automaticExtraction)
             {
                 client.DownloadFile(uri, "temp.zip");
@@ -1113,7 +1126,7 @@ namespace BeatSage_Downloader
                     Directory.Delete(Properties.Settings.Default.outputDirectory + @"\temp.zip", true);
                 }
 
-                ZipFile.ExtractToDirectory("temp.zip", (Properties.Settings.Default.outputDirectory + @"\" + fileName).Substring(0,250-pathLength));
+                ZipFile.ExtractToDirectory("temp.zip", filePath);
 
                 if (File.Exists("temp.zip"))
                 {
@@ -1122,12 +1135,13 @@ namespace BeatSage_Downloader
             }
             else
             {
-                if (File.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip"))
+
+                if (File.Exists(filePath))
                 {
-                    File.Delete(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip");
+                    File.Delete(filePath);
                 }
 
-                client.DownloadFile(uri, (Properties.Settings.Default.outputDirectory + @"\" + fileName).Substring(0, 250 - pathLength) + ".zip");
+                client.DownloadFile(uri, filePath + ".zip");
             }
 
 
