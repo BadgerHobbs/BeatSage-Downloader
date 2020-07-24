@@ -1136,9 +1136,9 @@ namespace BeatSage_Downloader
             else
             {
 
-                if (File.Exists(filePath))
+                if (File.Exists(filePath + ".zip"))
                 {
-                    File.Delete(filePath);
+                    File.Delete(filePath + ".zip");
                 }
 
                 client.DownloadFile(uri, filePath + ".zip");
