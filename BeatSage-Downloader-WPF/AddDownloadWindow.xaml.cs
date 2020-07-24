@@ -383,12 +383,12 @@ namespace BeatSage_Downloader
             this.Close();
         }
 
-        public async void ImportPlaylist(object sender, RoutedEventArgs e)
+        public void ImportPlaylist(object sender, RoutedEventArgs e)
         {
             loadingLabel.Visibility = Visibility.Visible;
             try
             {
-                List<string> youtubeURLS = await DownloadManager.RetrieveYouTubePlaylist(playlistURLTextBox.Text);
+                List<string> youtubeURLS = DownloadManager.RetrieveYouTubePlaylist(playlistURLTextBox.Text);
 
                 if (linksTextBox.Text == "Enter YouTube Links Here (Separate Lines)")
                 {
