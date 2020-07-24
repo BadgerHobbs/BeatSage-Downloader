@@ -1149,62 +1149,32 @@ namespace BeatSage_Downloader
             download.IsAlive = false;
         }
 
-        public static List<string> RetrieveYouTubePlaylist(string playlistULR)
+        public static async Task<List<string>> RetrieveYouTubePlaylist(string playlistULR)
         {
             string cleanPlaylistURL = playlistULR.Replace("watch?v", "playlist?v").Replace("music.", "");
 
-            string htmlContent = new WebClient().DownloadString(cleanPlaylistURL);
+            var youtube = new YoutubeClient();
+
+            List<string> urlParameters = playlistULR.Split('?')[1].Split('&').ToList();
+
+            string playlistID = "";
+
+            foreach (string parameterValue in urlParameters)
+            {
+                if (parameterValue.Contains("list="))
+                {
+                    playlistID = parameterValue.Replace("list=", "");
+                    break;
+                }
+            }
+            
+            var playlistData = await youtube.Playlists.GetVideosAsync(playlistID) ;
 
             List<string> urls = new List<string>();
 
-            string searchString = "data-video-id=";
-
-            int htmlPointerLocation = 1;
-
-            while (htmlPointerLocation > 0)
+            foreach (var video in playlistData)
             {
-
-                htmlPointerLocation = htmlContent.IndexOf(searchString);
-
-                if (htmlPointerLocation > 0)
-                {
-                    string temporaryURL = "";
-
-                    int i = 0;
-
-                    for (i = (htmlPointerLocation + searchString.Count() + 1); i < htmlContent.Count(); i++)
-                    {
-                        if (htmlContent[i].ToString() != "\"")
-                        {
-                            temporaryURL += htmlContent[i];
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    htmlContent = htmlContent.Substring(i);
-
-                    string newURL = "https://www.youtube.com/watch?v=" + temporaryURL;
-
-                    bool alreadyExists = false;
-
-                    foreach (string currentURL in urls)
-                    {
-                        if ((currentURL == newURL) || (newURL.Contains(currentURL)))
-                        {
-                            alreadyExists = true;
-                            break;
-                        }
-                    }
-
-                    if (alreadyExists == false)
-                    {
-                        Console.WriteLine(newURL);
-                        urls.Add(newURL);
-                    }
-                }
+                urls.Add(video.Url);
             }
 
             return urls;
