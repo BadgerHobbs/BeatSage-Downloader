@@ -1172,7 +1172,7 @@ namespace BeatSage_Downloader
 
                     int i = 0;
 
-                    for (i = (htmlPointerLocation + searchString.Count() + 1); i < htmlContent.Count(); i++)
+                    for (i = (htmlPointerLocation + searchString.Count()); i < htmlContent.Count(); i++)
                     {
                         char character = htmlContent[i];
 
