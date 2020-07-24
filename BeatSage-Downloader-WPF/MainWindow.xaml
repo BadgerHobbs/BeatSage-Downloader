@@ -263,7 +263,7 @@
             />
 
         <Label 
-            Content="Version 1.2.1" 
+            Content="Version 1.2.2" 
             HorizontalAlignment="Right" 
             Margin="0,0,0,0" 
             VerticalAlignment="Bottom" 
