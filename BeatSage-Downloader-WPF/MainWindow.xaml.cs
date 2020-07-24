@@ -1084,8 +1084,6 @@ namespace BeatSage_Downloader
 
             Console.WriteLine(url);
 
-            string fileName = "[BSD] " + trackName + " - " + artistName;
-
             WebClient client = new WebClient();
             Uri uri = new Uri(url);
 
@@ -1095,27 +1093,31 @@ namespace BeatSage_Downloader
                 Properties.Settings.Default.Save();
             }
 
+            int pathLength = System.IO.Path.GetFullPath(Properties.Settings.Default.outputDirectory).Count();
+
+            string fileName = "[BSD] " + trackName + " - " + artistName;
+
             if (Properties.Settings.Default.automaticExtraction)
             {
-                client.DownloadFile(uri, fileName + ".zip");
+                client.DownloadFile(uri, "temp.zip");
 
                 download.Status = "Extracting";
 
-                if (Directory.Exists(fileName))
+                if (Directory.Exists("temp.zip"))
                 {
-                    Directory.Delete(fileName);
+                    Directory.Delete("temp.zip");
                 }
                 
-                if (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\" + fileName))
+                if (Directory.Exists(Properties.Settings.Default.outputDirectory + @"\temp.zip"))
                 {
-                    Directory.Delete(Properties.Settings.Default.outputDirectory + @"\" + fileName, true);
+                    Directory.Delete(Properties.Settings.Default.outputDirectory + @"\temp.zip", true);
                 }
 
-                ZipFile.ExtractToDirectory(fileName + ".zip", Properties.Settings.Default.outputDirectory + @"\" + fileName);
+                ZipFile.ExtractToDirectory("temp.zip", (Properties.Settings.Default.outputDirectory + @"\" + fileName).Substring(0,250-pathLength));
 
-                if (File.Exists(fileName + ".zip"))
+                if (File.Exists("temp.zip"))
                 {
-                    File.Delete(fileName + ".zip");
+                    File.Delete("temp.zip");
                 }
             }
             else
@@ -1125,7 +1127,7 @@ namespace BeatSage_Downloader
                     File.Delete(Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip");
                 }
 
-                client.DownloadFile(uri, Properties.Settings.Default.outputDirectory + @"\" + fileName + ".zip");
+                client.DownloadFile(uri, (Properties.Settings.Default.outputDirectory + @"\" + fileName).Substring(0, 250 - pathLength) + ".zip");
             }
 
 
