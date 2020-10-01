@@ -708,6 +708,8 @@ namespace BeatSage_Downloader
                 trackName = String.Join("_", video.Title.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
             }
 
+            trackName += " - " + download.ModelVersion;
+
             download.Artist = artistName;
             download.Title = trackName;
 
@@ -797,7 +799,7 @@ namespace BeatSage_Downloader
             content.Add(new StringContent(download.GameModes), "modes");
             content.Add(new StringContent(download.SongEvents), "events");
             content.Add(new StringContent(download.Environment), "environment");
-            content.Add(new StringContent(download.ModelVersion), "system_tag");
+            content.Add(new StringContent(download.ModelVersion.ToLower()), "system_tag");
 
             var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content, cts.Token);
 
@@ -901,6 +903,7 @@ namespace BeatSage_Downloader
             var invalids = System.IO.Path.GetInvalidFileNameChars();
 
             trackName = String.Join("_", trackName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+            trackName += " - " + download.ModelVersion;
             artistName = String.Join("_", artistName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
 
             Console.WriteLine("trackName: " + trackName);
@@ -941,7 +944,7 @@ namespace BeatSage_Downloader
             content.Add(new StringContent(download.GameModes), "modes");
             content.Add(new StringContent(download.SongEvents), "events");
             content.Add(new StringContent(download.Environment), "environment");
-            content.Add(new StringContent(download.ModelVersion), "system_tag");
+            content.Add(new StringContent(download.ModelVersion.ToLower()), "system_tag");
 
             var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content, cts.Token);
 
@@ -1030,7 +1033,7 @@ namespace BeatSage_Downloader
             content.Add(new StringContent(download.GameModes), "modes");
             content.Add(new StringContent(download.SongEvents), "events");
             content.Add(new StringContent(download.Environment), "environment");
-            content.Add(new StringContent(download.ModelVersion), "system_tag");
+            content.Add(new StringContent(download.ModelVersion.ToLower()), "system_tag");
 
             var response = await httpClient.PostAsync("https://beatsage.com/beatsaber_custom_level_create", content, cts.Token);
 

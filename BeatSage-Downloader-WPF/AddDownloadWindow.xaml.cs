@@ -105,11 +105,11 @@ namespace BeatSage_Downloader
 
             if ((previousModelVersion != "") || (previousModelVersion != null))
             {
-                foreach (ComboBoxItem cbi in ModelVersionComboBox.Items)
+                foreach (CheckBox cb in GetModelVersionBoxes())
                 {
-                    if (cbi.Content.ToString() == previousModelVersion)
+                    if (previousModelVersion.Contains(cb.Tag.ToString()))
                     {
-                        cbi.IsSelected = true;
+                        cb.IsChecked = true;
                     }
                 }
             }
@@ -143,7 +143,7 @@ namespace BeatSage_Downloader
             string selectedGameModes = "";
             string selectedSongEvents = "";
             string selectedEnvironment = "";
-            string selectedModelVersion = "";
+            List<string> selectedModelVersions;
 
             bool difficultySelected = false;
             bool gameModeSelected = false;
@@ -279,7 +279,7 @@ namespace BeatSage_Downloader
             }
 
             Properties.Settings.Default.previousEnvironment = EnvironmentComboBox.Text;
-            Properties.Settings.Default.previousModelVersion = ModelVersionComboBox.Text;
+            Properties.Settings.Default.previousModelVersion = GetCheckedModelVersions();
             Properties.Settings.Default.previousGameEvents = selectedSongEvents;
             Properties.Settings.Default.Save();
 
@@ -294,7 +294,13 @@ namespace BeatSage_Downloader
                 Console.WriteLine("Random Environment: " + selectedEnvironment);
             }
 
-            selectedModelVersion = GetSelectedModelVersion();
+            selectedModelVersions = GetSelectedModelVersions();
+            if (selectedModelVersions.Count() == 0)
+            {
+                var message = "Please select at least one model version";
+                Console.WriteLine(message);
+                RaiseAnError(message);
+            }
 
             loadingLabel.Visibility = Visibility.Visible;
 
@@ -332,22 +338,25 @@ namespace BeatSage_Downloader
 
                     Console.WriteLine("Youtube ID: " + youtubeID);
 
-                    MainWindow.downloadManager.Add(new Download()
+                    foreach (var modelVersion in selectedModelVersions)
                     {
-                        Number = DownloadManager.downloads.Count + 1,
-                        YoutubeID = youtubeID,
-                        Title = "???",
-                        Artist = "???",
-                        Status = "Queued",
-                        Difficulties = selectedDifficulties,
-                        GameModes = selectedGameModes,
-                        SongEvents = selectedSongEvents,
-                        FilePath = "",
-                        FileName = "",
-                        Environment = selectedEnvironment,
-                        ModelVersion = selectedModelVersion,
-                        IsAlive = false
-                    });
+                        MainWindow.downloadManager.Add(new Download()
+                        {
+                            Number = DownloadManager.downloads.Count + 1,
+                            YoutubeID = youtubeID,
+                            Title = "???",
+                            Artist = "???",
+                            Status = "Queued",
+                            Difficulties = selectedDifficulties,
+                            GameModes = selectedGameModes,
+                            SongEvents = selectedSongEvents,
+                            FilePath = "",
+                            FileName = "",
+                            Environment = selectedEnvironment,
+                            ModelVersion = modelVersion,
+                            IsAlive = false
+                        });
+                    }
                 }
                 else if (linksTextBox.GetLineText(i).Contains(".mp3"))
                 {
@@ -355,22 +364,25 @@ namespace BeatSage_Downloader
 
                     Console.WriteLine("File Path: " + filePath);
 
-                    MainWindow.downloadManager.Add(new Download()
+                    foreach (var modelVersion in selectedModelVersions)
                     {
-                        Number = DownloadManager.downloads.Count + 1,
-                        YoutubeID = "",
-                        Title = "???",
-                        Artist = "???",
-                        Status = "Queued",
-                        Difficulties = selectedDifficulties,
-                        GameModes = selectedGameModes,
-                        SongEvents = selectedSongEvents,
-                        FilePath = filePath,
-                        FileName = System.IO.Path.GetFileName(filePath),
-                        Environment = selectedEnvironment,
-                        ModelVersion = selectedModelVersion,
-                        IsAlive = false
-                    });
+                        MainWindow.downloadManager.Add(new Download()
+                        {
+                            Number = DownloadManager.downloads.Count + 1,
+                            YoutubeID = "",
+                            Title = "???",
+                            Artist = "???",
+                            Status = "Queued",
+                            Difficulties = selectedDifficulties,
+                            GameModes = selectedGameModes,
+                            SongEvents = selectedSongEvents,
+                            FilePath = filePath,
+                            FileName = System.IO.Path.GetFileName(filePath),
+                            Environment = selectedEnvironment,
+                            ModelVersion = modelVersion,
+                            IsAlive = false
+                        });
+                    }
                 }
             }
 
@@ -547,32 +559,48 @@ namespace BeatSage_Downloader
             return selectedEnvironment;
         }
 
-        public string GetSelectedModelVersion()
+        public List<string> GetSelectedModelVersions()
         {
-            string selectedModelVersion = ((ComboBoxItem)ModelVersionComboBox.SelectedItem).Tag.ToString();
-
-            return selectedModelVersion;
+            return (from box in GetModelVersionBoxes() where box.IsChecked == true select box.Tag.ToString()).ToList();
         }
 
-        public void ModelVersionChanged(object sender, RoutedEventArgs e)
+        private List<CheckBox> GetModelVersionBoxes()
+        {
+            return new List<CheckBox> { ModelVersionV2, ModelVersionV2Flow, ModelVersionV1 };
+        }
+
+        private void ModelVersionV2Flow_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateCheckedModelVersions();
+        }
+
+        private void ModelVersionV2_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateCheckedModelVersions();
+        }
+
+        private void ModelVersionV1_Checked(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (((ComboBoxItem)ModelVersionComboBox.SelectedItem).Tag.ToString() == "v1")
-                {
-                    GameModeOneSaberCheckBox.IsEnabled = false;
-                    GameMode90DegreesCheckBox.IsEnabled = false;
-                    SongEventsObstaclesCheckBox.IsEnabled = false;
-                }
-                else
-                {
-                    GameModeOneSaberCheckBox.IsEnabled = true;
-                    GameMode90DegreesCheckBox.IsEnabled = true;
-                    SongEventsObstaclesCheckBox.IsEnabled = true;
-                }
+                bool otherModesEnabled = ModelVersionV1.IsChecked != true;
+                GameModeOneSaberCheckBox.IsEnabled = otherModesEnabled;
+                GameMode90DegreesCheckBox.IsEnabled = otherModesEnabled;
+                SongEventsObstaclesCheckBox.IsEnabled = otherModesEnabled;
+
+                UpdateCheckedModelVersions();
             }
             catch {}
-            
+        }
+
+        private string GetCheckedModelVersions()
+        {
+            return string.Join(",", (from box in GetModelVersionBoxes() where box.IsChecked == true select box.Tag.ToString()));
+        }
+
+        private void UpdateCheckedModelVersions()
+        {
+            Properties.Settings.Default.previousModelVersion = GetCheckedModelVersions();
         }
 
     }
