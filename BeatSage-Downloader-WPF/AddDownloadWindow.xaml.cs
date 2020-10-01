@@ -353,7 +353,8 @@ namespace BeatSage_Downloader
                             FilePath = "",
                             FileName = "",
                             Environment = selectedEnvironment,
-                            ModelVersion = modelVersion,
+                            ModelVersion = modelVersion.ToLower(),
+                            TitleSuffix = selectedModelVersions.Count() == 1 ? null : modelVersion,
                             IsAlive = false
                         });
                     }
@@ -379,7 +380,8 @@ namespace BeatSage_Downloader
                             FilePath = filePath,
                             FileName = System.IO.Path.GetFileName(filePath),
                             Environment = selectedEnvironment,
-                            ModelVersion = modelVersion,
+                            ModelVersion = modelVersion.ToLower(),
+                            TitleSuffix = selectedModelVersions.Count() == 1 ? null : modelVersion,
                             IsAlive = false
                         });
                     }
