@@ -13,7 +13,6 @@
         BorderThickness="0"
         WindowStartupLocation="CenterOwner" 
         Topmost="True"
-        EnableDWMDropShadow="True"
         ResizeMode="NoResize"
         >
 

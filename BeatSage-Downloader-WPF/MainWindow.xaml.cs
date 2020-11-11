@@ -512,7 +512,7 @@ namespace BeatSage_Downloader
 
             httpClient.DefaultRequestHeaders.Add("Host", "beatsage.com");
             httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "BeatSage-Downloader/1.2.3");
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "BeatSage-Downloader/1.2.4");
 
             if (MainWindow.GetSavedDownloads() != null)
             {
