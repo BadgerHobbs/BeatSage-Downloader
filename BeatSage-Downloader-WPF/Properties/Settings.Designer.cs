@@ -145,18 +145,6 @@ namespace BeatSage_Downloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("v1.2.3")]
-        public string currentVersion {
-            get {
-                return ((string)(this["currentVersion"]));
-            }
-            set {
-                this["currentVersion"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool enableLocalYouTubeDownload {
             get {
@@ -164,6 +152,18 @@ namespace BeatSage_Downloader.Properties {
             }
             set {
                 this["enableLocalYouTubeDownload"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("v1.2.4")]
+        public string currentVersion {
+            get {
+                return ((string)(this["currentVersion"]));
+            }
+            set {
+                this["currentVersion"] = value;
             }
         }
     }
