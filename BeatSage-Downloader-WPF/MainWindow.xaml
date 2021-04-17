@@ -11,6 +11,7 @@
         Title="BeatSage Downloader" Height="450" Width="800"
         BorderThickness="0"
         WindowStartupLocation="CenterScreen"
+        EnableDWMDropShadow="True"
         >
 
     <Grid>
@@ -262,7 +263,7 @@
             />
 
         <Label 
-            Content="Version 1.2.4" 
+            Content="Version 1.2.3" 
             HorizontalAlignment="Right" 
             Margin="0,0,0,0" 
             VerticalAlignment="Bottom" 
