@@ -572,8 +572,21 @@ namespace BeatSage_Downloader
                         }
                         catch
                         {
-                            currentDownload.Status = "Unable To Retrieve Metadata";
-                            
+                            try
+                            {
+                                if (Properties.Settings.Default.enableLocalYouTubeDownload)
+                                {
+                                    await RetrieveMetaData(itemUrl, currentDownload);
+                                }
+                                else
+                                {
+                                    await CreateCustomLevelWithLocalMP3Download(itemUrl, currentDownload);
+                                }
+                            }
+                            catch
+                            {
+                                currentDownload.Status = "Unable To Retrieve Metadata";
+                            }                            
                         }
 
                         currentDownload.IsAlive = false;
@@ -661,9 +674,14 @@ namespace BeatSage_Downloader
 
         public async static Task CreateCustomLevelWithLocalMP3Download(string url, Download download)
         {
+            var httpClientHandler = new HttpClientHandler();
+            //httpClientHandler.UseCookies = false;
+
+            var httpClient = new HttpClient(httpClientHandler, true);
+
             download.Status = "Downloading File";
 
-            var youtube = new YoutubeClient();
+            var youtube = new YoutubeClient(httpClient);
 
             // You can specify video ID or URL
             var video = await youtube.Videos.GetAsync(url);
