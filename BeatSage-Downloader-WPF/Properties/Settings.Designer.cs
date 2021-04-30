@@ -157,7 +157,7 @@ namespace BeatSage_Downloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("v1.2.5")]
+        [global::System.Configuration.DefaultSettingValueAttribute("v1.2.6")]
         public string currentVersion {
             get {
                 return ((string)(this["currentVersion"]));
