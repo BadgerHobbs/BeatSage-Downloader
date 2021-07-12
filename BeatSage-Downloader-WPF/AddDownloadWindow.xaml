@@ -7,7 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BeatSage_Downloader"
         mc:Ignorable="d"
-        Title="Add Download" Height="450" Width="650"
+        Title="Add Download" Height="500" Width="650"
         
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         BorderThickness="0"
@@ -335,7 +335,7 @@
         <Rectangle 
             Fill="#FF2E2E2E"
             HorizontalAlignment="Left" 
-            Height="61" 
+            Height="98" 
             VerticalAlignment="Top" 
             Width="220" Margin="10,304,0,0" Grid.Row="1"
             />
@@ -379,22 +379,36 @@
 
         </ComboBox>
 
-        <ComboBox 
-            Name="ModelVersionComboBox"
+        <CheckBox 
+            Content="V2" 
+            Tag="V2"
+            x:Name="ModelVersionV2"
             HorizontalAlignment="Left" 
             Margin="20,331,0,0" 
-            VerticalAlignment="Top" 
-            Width="200" 
-            Grid.Row="1"
-            IsEditable="False"
-            SelectionChanged="ModelVersionChanged"
-            >
-
-            <ComboBoxItem Content="V2" HorizontalAlignment="Left" Width="198" Selector.IsSelected="True" Tag="v2"/>
-            <ComboBoxItem Content="V2-Flow (Better flow, less creative)" HorizontalAlignment="Left" Width="198" Tag="v2-flow"/>
-            <ComboBoxItem Content="V1 (More unpredictable, less modes)" HorizontalAlignment="Left" Width="198" Tag="v1"/>
-            
-        </ComboBox>
+            VerticalAlignment="Top" Grid.Row="1"
+            Checked="ModelVersionV2_Checked"
+            Unchecked="ModelVersionV2_Checked"
+            />
+        <CheckBox 
+            Content="V2-Flow (Better flow, less creative)" 
+            Tag="V2-Flow"
+            x:Name="ModelVersionV2Flow"
+            HorizontalAlignment="Left" 
+            Margin="20,354,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
+            Checked="ModelVersionV2Flow_Checked"
+            Unchecked="ModelVersionV2Flow_Checked"
+            />
+        <CheckBox 
+            Content="V1 (Less predicatble, less modes)"
+            Tag="V1"
+            x:Name="ModelVersionV1"
+            HorizontalAlignment="Left" 
+            Margin="20,377,0,0" 
+            VerticalAlignment="Top" Grid.Row="1"
+            Checked="ModelVersionV1_Checked"
+            Unchecked="ModelVersionV1_Checked"
+            />
 
     </Grid>
 
