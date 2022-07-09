@@ -4,6 +4,9 @@
 
 ### Please Note: This software is unofficial and in no way affiliated with [Beat Sage](https://beatsage.com/#)
 
+![](https://img.shields.io/github/downloads/BadgerHobbs/BeatSage-Downloader/total)
+![](https://img.shields.io/github/v/tag/BadgerHobbs/BeatSage-Downloader?label=Latest%20Release)
+
 Features
 ======
 
