@@ -289,6 +289,7 @@ namespace BeatSage_Downloader
         private string identifier;
         private string environment;
         private string modelVersion;
+        private string titleSuffix;
         private bool isAlive;
 
         public int Number
@@ -463,6 +464,19 @@ namespace BeatSage_Downloader
             set
             {
                 modelVersion = value;
+                RaiseProperChanged();
+            }
+        }
+
+        public string TitleSuffix
+        {
+            get
+            {
+                return titleSuffix;
+            }
+            set
+            {
+                titleSuffix = value;
                 RaiseProperChanged();
             }
         }
@@ -708,6 +722,11 @@ namespace BeatSage_Downloader
                 trackName = String.Join("_", video.Title.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
             }
 
+            if (download.TitleSuffix != null)
+            {
+                trackName += " - " + download.TitleSuffix;
+            }
+
             download.Artist = artistName;
             download.Title = trackName;
 
@@ -901,6 +920,11 @@ namespace BeatSage_Downloader
             var invalids = System.IO.Path.GetInvalidFileNameChars();
 
             trackName = String.Join("_", trackName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+            if (download.TitleSuffix != null)
+            {
+                trackName += " - " + download.TitleSuffix;
+            }
+
             artistName = String.Join("_", artistName.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
 
             Console.WriteLine("trackName: " + trackName);
